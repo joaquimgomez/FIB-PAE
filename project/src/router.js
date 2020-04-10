@@ -21,6 +21,16 @@ export default new Router({
       path: "/add",
       name: "add",
       component: () => import("./components/AddTutorialComponent/AddTutorialComponent")
+    },
+    {
+      path: "/app",
+      name: "main",
+      component: () => import("./components/MainComponent/MainComponent")
+    },
+    {
+      path: "/app/questionnaire",
+      name: "questionnaire",
+      component: () => import("./components/QuestionnaireComponent/QuestionnaireComponent")
     }
   ]
 });

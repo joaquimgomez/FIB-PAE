@@ -1,0 +1,60 @@
+<div class="container-fluid">
+    <el-row>
+        <el-col :xs="24">
+            <el-card style="background-color: #dab8f5;">
+                <el-row>
+                    <el-col :xs="24">
+                        <h2 class="form_tittle">{{name__view}}</h2>
+                    </el-col>
+                </el-row>
+                <br>
+                <el-form ref="form" :model="form" label-width="75px">
+                    <!-- Name -->
+                    <el-col :xs="24" :sm="23">
+                        <el-form-item :label="labels.name" prop="name">
+                            <el-input placeholder="Please input name or ID" v-model="ruleForm.name"></el-input>
+                        </el-form-item>
+                    </el-col> 
+                
+                    <!-- Age -->
+                    <el-col :xs="24" :sm="23">
+                        <el-form-item :label="labels.age" prop="age">
+                            <el-input placeholder="Please input age" v-model="ruleForm.age"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <br>
+                    <span>Thank you for taking the time to fill in this questionnaire. Your opinions are really important to us.</span>
+
+
+                        <!-- Type -->
+                        <!-- <el-col :xs="24" :sm="6" :md="6" :lg="6">
+                            <el-form :label="labels.type" prop="type">
+                                <label for="labels.type">Tipo</label>
+                                <el-select v-model="ruleForm.type" filterable clearable @change="clearList('ruleForm')">
+                                    <el-option v-for="item in combo.types" :key="item" :label="item" :value="item"></el-option>
+                                </el-select>
+                            </el-form>
+                        </el-col> -->
+                        <!-- Answer -->
+                        <!-- <el-col :xs="24" :sm="6" :md="6" :lg="6">
+                            <el-form :label="labels.answer" prop="answer">
+                                <label for="labels.answer">Respuesta</label>
+                                <el-select v-model="ruleForm.answer" filterable clearable @change="clearList('ruleForm')">
+                                    <el-option v-for="item in combo.answers" :key="item" :label="item" :value="item"></el-option>
+                                </el-select>
+                            </el-form>
+                        </el-col> -->
+                        
+                
+                
+                    <el-row :gutter="24">
+                        <!-- Save button -->
+                        <el-col :offset="20" :xs="4" :sm="4" :md="4" :lg="4" style="text-align: right">
+                            <el-button type="info" plain size="small" icon="el-icon-check" @click="saveForm()">Save</el-button>
+                        </el-col>
+                    </el-row>
+                </el-form>
+            </el-card>
+        </el-col>
+    </el-row>
+</div>
