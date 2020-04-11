@@ -79,8 +79,6 @@ class ComputerVisionEngine {
 		let hierarchy = new cv.Mat();
 		cv.findContours(edges, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE);
 
-		console.log(contours.size());
-
 		//
 		let potentialAreas = [];
 		var maxArea = 0;
@@ -110,13 +108,18 @@ class ComputerVisionEngine {
 	/*
 	*/
 	generateSubProblemImages(contours) {
-		var subProblemImagesimages = [];
-		for (c in contours) {
+		let subProblemImages = [];
+
+		for (const c of contours) {
 			let rect = cv.boundingRect(c);
-			partialRegionOfInterest = this.grayScale_image.slice([rect.y, rect.y + rect.height]);
-			regionOfInterest  = this.grayScale_image.slice([rect.x, rect.x + rect.width]);
-			subProblemImagesimages.push(regionOfInterest);
+
+			let regionOfInterest = new cv.Mat();
+			regionOfInterest = this.grayScale_image.roi(rect);			
+
+			subProblemImages.push(regionOfInterest);
 		}
+
+		return subProblemImages;
 	}
 
 	/*
@@ -150,7 +153,7 @@ class ComputerVisionEngine {
 			}
 
 			//
-			//let subproblems = this.generateSubProblemImages(responseAreas);
+			let subproblems = this.generateSubProblemImages(responseAreas);
 
 			return this.toShow_image;
 
