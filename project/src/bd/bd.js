@@ -1,5 +1,9 @@
+
+//MySql
 var mysql = require('mysql');
-var config = require("../config");
+
+//Configuración del servidor
+var config = require("./config");
 
 // eslint-disable-next-line no-unused-vars
 var sqlConnection = function sqlConnection(sql, values, next) {
@@ -30,3 +34,5 @@ var sqlConnection = function sqlConnection(sql, values, next) {
         next.apply(this, arguments);
     });
 }
+
+module.exports(sqlConnection);
