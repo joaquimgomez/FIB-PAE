@@ -89,7 +89,6 @@ exports.delete = (req, res) => {
 };
 
 exports.deleteAll = (req, res) => {
-    // eslint-disable-next-line no-unused-vars
     Organizacion.removeAll((err, data) => {
         if (err)
             res.status(500).send({
