@@ -1,5 +1,5 @@
 module.exports = app => {
-    const organization = require("../controllers/organization.controller");
+    const organization = require("../controllers/organizationController");
 
     app.post("/organization", organization.create);
     app.get("/organization", organization.findAll);

@@ -1,4 +1,4 @@
-const organization = require("../models/organization.model");
+const organization = require("../models/organizationModel");
 
 exports.create = (req, res) =>{
     if (!req.body){
