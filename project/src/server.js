@@ -14,7 +14,7 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to application." });
 });
 
-require("./routes/organizacion.routes")(app);
+require("./routes/organization.routes")(app);
 
 // set port, listen for requests
 app.listen(3000, () => {

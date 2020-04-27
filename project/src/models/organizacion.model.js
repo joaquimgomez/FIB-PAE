@@ -2,27 +2,27 @@ const bd = require("../bd/bd");
 
 //constructor
 
-const Organizacion = function(organizacion) {
-    this.name = organizacion.name;
-    this.adress = organizacion.adress;
-    this.phone = organizacion.phone;
-    this.web = organizacion.web;
+const organization = function(organization) {
+    this.name = organization.name;
+    this.adress = organization.adress;
+    this.phone = organization.phone;
+    this.web = organization.web;
 }
 
-Organizacion.create = (newOrganizacion, result) => {
-    bd.query("INSERT INTO Organizacion SET ?", newOrganizacion, (err, res) => {
+organization.create = (neworganization, result) => {
+    bd.query("INSERT INTO organization SET ?", neworganization, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
             return;
         }
-        console.log("created organization: ", {id: res.insertId, ...newOrganizacion});
-        result(null, {id: res.insertId, ...newOrganizacion});
+        console.log("created organization: ", {id: res.insertId, ...neworganization});
+        result(null, {id: res.insertId, ...neworganization});
     });
 };
 
-Organizacion.getAll = result => {
-    bd.query("SELECT * FROM Organizacion", (err, res) => {
+organization.getAll = result => {
+    bd.query("SELECT * FROM organization", (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -33,15 +33,15 @@ Organizacion.getAll = result => {
     });
 };
 
-Organizacion.findById = (organizacionId, result) => {
-    bd.query('SELECT * FROM Organizacion WHERE id = ' + organizacionId, (err, res) => {
+organization.findById = (organizationId, result) => {
+    bd.query('SELECT * FROM organization WHERE id = ' + organizationId, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
             return;
         }
         if (res.length) {
-            console.log("found organizacion: ", res[0]);
+            console.log("found organization: ", res[0]);
             result(null, res[0]);
             return;
         }
@@ -49,10 +49,10 @@ Organizacion.findById = (organizacionId, result) => {
     });
 };
 
-Organizacion.updateById = (id, organizacion, result) => {
+organization.updateById = (id, organization, result) => {
     bd.query(
-      "UPDATE Organizacion SET name = ?, adress = ?, phone = ?, web = ? WHERE id = ?",
-      [organizacion.name, organizacion.adress, organizacion.phone, organizacion.web, id], (err, res) => {
+      "UPDATE organization SET name = ?, adress = ?, phone = ?, web = ? WHERE id = ?",
+      [organization.name, organization.adress, organization.phone, organization.web, id], (err, res) => {
         if (err) {
           console.log("error: ", err);
           result(null, err);
@@ -65,13 +65,13 @@ Organizacion.updateById = (id, organizacion, result) => {
           return;
         }
   
-        console.log("updated organizacion: ", { id: id, ...organizacion });
-        result(null, { id: id, ...organizacion });
+        console.log("updated organization: ", { id: id, ...organization });
+        result(null, { id: id, ...organization });
       });
 };
 
-Organizacion.remove = (id, result) => {
-    bd.query("DELETE FROM Organizacion WHERE id = ?", id, (err, res) => {
+organization.remove = (id, result) => {
+    bd.query("DELETE FROM organization WHERE id = ?", id, (err, res) => {
     if (err) {
         console.log("error: ", err);
         result(null, err);
@@ -83,22 +83,22 @@ Organizacion.remove = (id, result) => {
         return;
     }
 
-    console.log("deleted organizacion with id: ", id);
+    console.log("deleted organization with id: ", id);
     result(null, res);
     });
 };
 
-Organizacion.removeAll = result => {
-    bd.query("DELETE FROM Organizacion", (err, res) => {
+organization.removeAll = result => {
+    bd.query("DELETE FROM organization", (err, res) => {
     if (err) {
         console.log("error: ", err);
         result(null, err);
         return;
     }
-    console.log('deleted ' + res.affectedRows + ' organizaciones');
+    console.log('deleted ' + res.affectedRows + ' organizationes');
     result(null, res);
     });
 };
   
 
-module.exports = Organizacion;
+module.exports = organization;

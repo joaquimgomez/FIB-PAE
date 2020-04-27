@@ -1,4 +1,4 @@
-const Organizacion = require("../models/organizacion.model");
+const organization = require("../models/organization.model");
 
 exports.create = (req, res) =>{
     if (!req.body){
@@ -7,42 +7,42 @@ exports.create = (req, res) =>{
         });
     }
 
-    const organizacion = new Organizacion({
+    const organization = new organization({
         name: req.body.name,
         adress: req.body.adress,
         phone: req.body.phone,
         web: req.body.web
     });
 
-    Organizacion.create(organizacion, (err, data) => {
+    organization.create(organization, (err, data) => {
         if (err)
             res.status(500).send({
-                message: err.message || "Error ocurred while creating Organizacion."
+                message: err.message || "Error ocurred while creating organization."
             });
         else res.send(data);
     });
 };
 
 exports.findAll = (req, res) =>{
-    Organizacion.getAll((err, data) => {
+    organization.getAll((err, data) => {
         if (err)
             res.status(500).send({
-                message: err.message || "Error ocurred while retrieving Organizaciones."
+                message: err.message || "Error ocurred while retrieving organizationes."
             });
         else res.send(data);
     })
 };
 
 exports.findOne = (req, res) => {
-  Organizacion.findById(req.params.organizacionId, (err, data) => {
+  organization.findById(req.params.organizationId, (err, data) => {
       if (err) {
           if (err.kind === "not_found") {
               res.status(404).send({
-                  message: 'Organization with id ${req.params.organizacionId} not found'
+                  message: 'Organization with id ${req.params.organizationId} not found'
               });
           } else {
               res.status(500).send({
-                  message: err.message || 'Error retrieving Organizacion with id ${req.params.organizacionId}'
+                  message: err.message || 'Error retrieving organization with id ${req.params.organizationId}'
               });
           }
       } else res.send(data);
@@ -56,16 +56,16 @@ exports.update = (req, res) => {
         });
     }
 
-    Organizacion.updateById(req.params.organizacionId, new Organizacion(req.body), (err, data) => {
+    organization.updateById(req.params.organizationId, new organization(req.body), (err, data) => {
         if (err) {
             if (err.kind === "not_found") {
                 res.status(404).send({
-                    message: "Not found Organizacion with id " + req.params.organizacionId
+                    message: "Not found organization with id " + req.params.organizationId
                 });
             }
             else {
                 res.status(500).send({
-                    message: "Error updating Organizacion with id " + req.params.organizacionId
+                    message: "Error updating organization with id " + req.params.organizationId
                 });
             }
         } else res.send(data);
@@ -73,15 +73,15 @@ exports.update = (req, res) => {
 };
 
 exports.delete = (req, res) => {
-  Organizacion.remove(req.params.organizacionId, (err, data) => {
+  organization.remove(req.params.organizationId, (err, data) => {
       if (err) {
           if (err.kind === 'not_found'){
               res.status(404).send({
-                  message: "Not found Organizacion with id " + req.params.organizacionId
+                  message: "Not found organization with id " + req.params.organizationId
               });
           } else {
               res.status(500).send({
-                  message: "Error deleting Organizacion with id " + req.params.organizacionId
+                  message: "Error deleting organization with id " + req.params.organizationId
               });
           }
       } else res.send(data);
@@ -89,11 +89,11 @@ exports.delete = (req, res) => {
 };
 
 exports.deleteAll = (req, res) => {
-    Organizacion.removeAll((err, data) => {
+    organization.removeAll((err, data) => {
         if (err)
             res.status(500).send({
-                message: err.message || "Some error ocurred while removing all Organizacion"
+                message: err.message || "Some error ocurred while removing all organization"
             });
-        else res.send({ message: 'All Organizaciones were deleted succesfully!'});
+        else res.send({ message: 'All organizationes were deleted succesfully!'});
     });
 };

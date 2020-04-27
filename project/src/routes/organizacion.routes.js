@@ -1,10 +1,10 @@
 module.exports = app => {
-    const organizacion = require("../controllers/organizacion.controller");
+    const organization = require("../controllers/organization.controller");
 
-    app.post("/organizacion", organizacion.create);
-    app.get("/organizacion", organizacion.findAll);
-    app.get("/organizacion/:organizacionId", organizacion.findOne);
-    app.put("/organizacion/:organizacionId", organizacion.update);
-    app.delete("/organizacion/:organizacionId", organizacion.delete);
-    app.delete("/organizacion", organizacion.deleteAll);
+    app.post("/organization", organization.create);
+    app.get("/organization", organization.findAll);
+    app.get("/organization/:organizationId", organization.findOne);
+    app.put("/organization/:organizationId", organization.update);
+    app.delete("/organization/:organizationId", organization.delete);
+    app.delete("/organization", organization.deleteAll);
 };
