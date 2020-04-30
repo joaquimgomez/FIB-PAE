@@ -1,5 +1,4 @@
 // --------------- IMPORTS AREA ---------------
-//import Tesseract from 'tesseract.js';
 
 
 // --------------- CONSTANTS AREA ---------------
@@ -52,7 +51,18 @@ class TextProblemSolver extends ComputerVisionEngineProblemSolver {
 	 * 
 	 */
 	solve() {
-	
+		// Load required functions
+		const gcpc = require('./GCPCommunication/TextDetectionGCPCommunication.js');
+
+		// Obtain client to solve the text problem
+		const client = gcpc.createClient();
+
+		// Obtain the text
+		getTextFromImage(client, './ruby.jpeg').then(function(result) {
+			text = result;
+			console.log(text);
+		});
+
 	}
 	
 }
@@ -162,7 +172,6 @@ class IconsProblemSolver extends ComputerVisionEngineProblemSolver {
 			}
 		}
 	}
-	
 
 	/**
 	 * 
