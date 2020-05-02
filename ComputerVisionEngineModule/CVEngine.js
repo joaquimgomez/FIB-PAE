@@ -1,8 +1,8 @@
-// --------------- IMPORTS AREA ---------------
+// --------------- REQUIRES ---------------
 const cv = require("opencv4nodejs");
 
 
-// --------------- CONSTANTS AREA ---------------
+// --------------- CONSTANTS ---------------
 const MIN_CANNY_ALGORITHM = 190;	// TODO: Doc
 const MAX_CANNY_ALGORITHM = 200;	// TODO: Doc
 const MINIMUM_AREA_FACTOR = 1/10;	// TODO: Doc
@@ -12,17 +12,17 @@ const MINIMUM_AREA_FACTOR = 1/10;	// TODO: Doc
 // TO DO: BLUR MODE AND PARAMETERS
 
 
-// --------------- CLASSES AREA ---------------
+// --------------- CLASSES ---------------
 /**
  * 
  */
 class ComputerVisionEngineProblemSolver {
-	// --------------- CLASS FIELDS AREA ---------------
+	// --------------- CLASS FIELDS ---------------
 	problemImage;			// Subimage of the problem
 	toShow_problemImage;	//
 
 
-	// --------------- CLASS FUNCTIONS AREA ---------------
+	// --------------- CLASS FUNCTIONS ---------------
 
 	/**
 	 * Precondition: The subimage (i.e. subproblem) is a valid area in gray scale color model.
@@ -44,10 +44,10 @@ class ComputerVisionEngineProblemSolver {
  * 
  */
 class TextProblemSolver extends ComputerVisionEngineProblemSolver {
-	// --------------- CLASS FIELDS AREA ---------------
+	// --------------- CLASS FIELDS ---------------
 
 
-	// --------------- CLASS FUNCTIONS AREA ---------------
+	// --------------- CLASS FUNCTIONS ---------------
 	
 	/**
 	 * 
@@ -73,10 +73,10 @@ class TextProblemSolver extends ComputerVisionEngineProblemSolver {
  * 
  */
 class CheckboxesProblemSolver extends ComputerVisionEngineProblemSolver {
-	// --------------- CLASS FIELDS AREA ---------------
+	// --------------- CLASS FIELDS ---------------
 
 	
-	// --------------- CLASS FUNCTIONS AREA ---------------
+	// --------------- CLASS FUNCTIONS ---------------
 
 	/**
 	 * 
@@ -111,7 +111,7 @@ class CheckboxesProblemSolver extends ComputerVisionEngineProblemSolver {
  * 
  */
 class IconsProblemSolver extends ComputerVisionEngineProblemSolver {
-	// --------------- CLASS FIELDS AREA ---------------
+	// --------------- CLASS FIELDS ---------------
 
 	numberDetectedCirles = 0;							//
 	positionsAndRadiuDetectedCircles = new Array();		// (x, y, r) of every cirle detected
@@ -243,40 +243,38 @@ class IconsProblemSolver extends ComputerVisionEngineProblemSolver {
  * 
  */
 class ComputerVisionEngine {
-	// --------------- CLASS FIELDS AREA ---------------
+	// --------------- CLASS FIELDS ---------------
 
 	image;				// Original Image
-	grayScale_image;	// Gray Scale Image
-	toShow_image;		// Image to show
+	grayScaleImage;	// Gray Scale Image
+	toShowImage;		// Image to show
 	responsesTypes;		// Array with the types of the questions (in order)
 
 
-	// --------------- CLASS FUNCTIONS AREA ---------------
+	// --------------- CLASS FUNCTIONS ---------------
 
-	/*
-		Precondition: OpenCV library is loaded and the passed image is in a correct format.
-		In debug mode the image format should be the ID of the canvas.
-	*/
+	/**
+	 * Precondition: OpenCV library is loaded and the passed image is in a correct format.
+	 * In debug mode the image format should be the ID of the canvas.
+	 * @param {*} image 
+	 */
 	constructor(image) {
 		this.image = image;
-		this.grayScale_image = this.image.copy();
-		this.toShow_image = this.image.copy();
+		this.grayScaleImage = this.image.copy();
+		this.toShowImage = this.image.copy();
 
 		// TODO: recibir los tipos de las preguntas
 
 		// From RGB to Gray Scale
-		this.grayScale_image = this.grayScale_image.bgrToGray();
+		this.grayScaleImage = this.grayScaleImage.bgrToGray();
 	}
 
-	/*
-		Retuns true if it has 4 corners, i.e. it is a square or rectangle.
-	*/
+	/**
+	 * Retuns true if it has 4 corners, i.e. it is a square or rectangle.
+	 * @param {*} contour 
+	 */
 	has4Corners(contour) {
-		//let approx = new cv.Mat();
 		// Get polygon
-		//cv.approxPolyDP(contour, approx, 0.01*cv.arcLength(contour, true), true);
-		//return (approx.size().height == 4);
-
 		let approx = contour.approxPolyDP(0.01*contour.arcLength(true), true);
 		return (approx.length == 4);
 	}
@@ -286,20 +284,13 @@ class ComputerVisionEngine {
 	*/
 	obtainResponseAreas() {
 		// Blur image to clean noise
-		//let blurred_im = new cv.Mat();
 		let ksize = new cv.Size(5, 5);
-		//blurred_im = cv.GaussianBlur(this.grayScale_image, (5,5), 0);
-		let blurred_im = this.grayScale_image.gaussianBlur(ksize, 0);
+		let blurred_im = this.grayScaleImage.gaussianBlur(ksize, 0);
 
 		// Edge detection with Canny's Algorithm
-		//let edges = new cv.Mat();
 		let edges = blurred_im.canny(MIN_CANNY_ALGORITHM, MAX_CANNY_ALGORITHM);
-		//cv.Canny(blurred_im, edges, MIN_CANNY_ALGORITHM, MAX_CANNY_ALGORITHM);
 
 		// Looking for contours
-		//let contours = new cv.MatVector();
-		//let hierarchy = new cv.Mat();
-		//cv.findContours(edges, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE);
 		let contours = edges.findContours(cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE);
 
 		//
@@ -310,72 +301,41 @@ class ComputerVisionEngine {
 			if (this.has4Corners(c)) {
 				potentialAreas.push(c);
 
-				//let currentContourArea = cv.contourArea(c);
 				if (c.area > maxArea) {
 					maxArea = c.area;
 				}
 			}
 		}
 
-		/*let potentialAreas = [];
-		var maxArea = 0;
-		for (let i = 0; i < contours.size(); i++) {
-			let c = contours.get(i);
-			if (this.has4Corners(c)) {
-				potentialAreas.push(c);
-				
-				let currentContourArea = cv.contourArea(c);
-				if (currentContourArea > maxArea) {
-					maxArea = currentContourArea;
-				}
-			}
-		}*/
-
 		let responseAreas = [];
 		for (const pa of potentialAreas) {
 			if (pa.area >= maxArea * MINIMUM_AREA_FACTOR)	responseAreas.push(pa);
 		} 
 
-		//
-		//let responseAreas = [];
-		//for (const pa of potentialAreas) {
-		//	if (cv.contourArea(pa) >= maxArea * MINIMUM_AREA_FACTOR)	responseAreas.push(pa);
-			//responseAreas.push(pa);
-		//}
-
 		// Conours are ordered from bottom to top
 		return responseAreas.reverse();
 	}
 
-	/*
-	*/
+	/**
+	 * 
+	 * @param {*} contours 
+	 */
 	generateSubProblemImages(contours) {
 		let subProblemImages = [];
 
 		for (const c of contours) {
 			let rect = c.boundingRect()
-			let regionOfInterest = this.grayScale_image.getRegion(rect);
+			let regionOfInterest = this.grayScaleImage.getRegion(rect);
 			subProblemImages.push(regionOfInterest);
 		}
-
-
-		/*let subProblemImages = [];
-
-		for (const c of contours) {
-			let rect = cv.boundingRect(c);
-
-			let regionOfInterest = new cv.Mat();
-			regionOfInterest = this.grayScale_image.roi(rect);			
-
-			subProblemImages.push(regionOfInterest);
-		}*/
 
 		return subProblemImages;
 	}
 
-	/*
-	
-	*/
+	/**
+	 * 
+	 * @param {*} subproblems 
+	 */
 	subproblemsTreatment(subproblems) {
 		for (var i = 0; i < subproblems.length; i++) {
 			// TODO: Definir forma de transmisión de la tipología de preguntas.
@@ -392,36 +352,32 @@ class ComputerVisionEngine {
 
 	/**
 	 * 
-	 * @param debug 
+	 * @param {*} contours 
+	 */
+	drawContours(contours) {
+		let color = new cv.Scalar(255,0,0,255);
+		for (const c of contours) {
+			this.toShowImage.drawContours(c, 0, color, 5)
+		}
+	}
+
+	/**
+	 * 
 	 */
 	run() {
-		//
+		// Obtain response areas
 		let responseAreas = this.obtainResponseAreas();
 
-		//console.log(responseAreas.length);
-
-		// Draw detected response areas in the canvas
-		/*let color = new cv.Scalar(255,0,0,255);
-		for (const ra of responseAreas) {
-			let contourToDraw = new cv.MatVector();
-			contourToDraw.push_back(ra);
-			cv.drawContours(this.toShow_image, contourToDraw, 0, color, 5);
-		}*/
-
-		//
+		// Generate subproblem images (as a matrix)
 		let subproblems = this.generateSubProblemImages(responseAreas);
-		//this.toShow_image = subproblems[5];
 
-		//
+		// Treate each subproblem image (as a matrix)
 		let results = this.subproblemsTreatment([subproblems[3]]);
 		cv.imwrite("./subproblem.png", subproblems[3]);
-
-		console.log("cucu");
 		
 		//return results;
-		//return this.toShow_image;
+		//return this.toShowImage;
 	}
 }
-
 
 module.exports = ComputerVisionEngine;
