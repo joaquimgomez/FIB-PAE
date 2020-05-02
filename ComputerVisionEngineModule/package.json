@@ -1,0 +1,19 @@
+{
+  "name": "computervisionenginemodule",
+  "version": "1.0.0",
+  "description": "",
+  "main": "NodeCVEModule.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/vision": "^1.11.0",
+    "opencv4nodejs": "^5.2.0"
+  },
+  "devDependencies": {
+    "electron": "^8.2.5",
+    "electron-rebuild": "^1.10.1"
+  }
+}
