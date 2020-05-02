@@ -1,5 +1,8 @@
 // --------------- REQUIRES ---------------
-const cv = require("opencv4nodejs");
+const fs = require('fs');
+const cv = require('opencv4nodejs');
+const gcpc = require('./GCPCommunication/TextDetectionGCPCommunication.js');
+
 
 
 // --------------- CONSTANTS ---------------
@@ -11,6 +14,8 @@ const MINIMUM_AREA_FACTOR = 1/10;	// TODO: Doc
 //const FIND_CONTOURS_REPRESENTATION_MODE = cv.CHAIN_APPROX_NONE;	// TODO: Doc
 // TO DO: BLUR MODE AND PARAMETERS
 
+const DEFAULT_TMP_IMAGES_PATH = './tmp/';
+
 
 // --------------- CLASSES ---------------
 /**
@@ -19,7 +24,8 @@ const MINIMUM_AREA_FACTOR = 1/10;	// TODO: Doc
 class ComputerVisionEngineProblemSolver {
 	// --------------- CLASS FIELDS ---------------
 	problemImage;			// Subimage of the problem
-	toShow_problemImage;	//
+	toShowProblemImage;		//
+	imagePath;				// Field for the image path for the subclass TextProblemSolver
 
 
 	// --------------- CLASS FUNCTIONS ---------------
@@ -29,7 +35,7 @@ class ComputerVisionEngineProblemSolver {
 	 */
 	constructor(subimage) {
 		this.problemImage = subimage.copy();
-		this.toShow_problemImage = subimage.copy();
+		this.toShowProblemImage = subimage.copy();
 	}
 
 	/**
@@ -52,19 +58,49 @@ class TextProblemSolver extends ComputerVisionEngineProblemSolver {
 	/**
 	 * 
 	 */
+	generateTemporalImage() {
+		this.imagePath = DEFAULT_TMP_IMAGES_PATH + Math.floor(Math.random() * 100000) + '.jpeg';
+
+		cv.imwrite(this.imagePath, this.problemImage);
+	}
+
+	/**
+	 * 
+	 */
+	deleteTemporalImage() {
+		try {
+			fs.unlinkSync(this.imagePath);
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	/**
+	 * 
+	 * @param {*} imagePath 
+	 */
 	solve() {
-		// Load required functions
-		const gcpc = require('./GCPCommunication/TextDetectionGCPCommunication.js');
+		// Prepare image
+		this.generateTemporalImage();
 
 		// Obtain client to solve the text problem
 		const client = gcpc.createClient();
 
-		// Obtain the text
-		getTextFromImage(client, './ruby.jpeg').then(function(result) {
-			text = result;
-			console.log(text);
-		});
+		if (client != -1) {
+			// Obtain the text
+			let text = gcpc.getTextFromImage(client, this.imagePath).then(function(result) {
+				return result;
+			}, function(err) {
+				console.error(err);
+				return 'None';
+			});
 
+			this.deleteTemporalImage();
+			return text;
+		}
+
+		this.deleteTemporalImage();
+		return 'None';
 	}
 	
 }
@@ -173,7 +209,6 @@ class IconsProblemSolver extends ComputerVisionEngineProblemSolver {
 				if (value >= this.thres) {
 					// Corners contains a list of pairs (x,y)
 					this.corners.push(new Array(j,i));
-					console.log(value);
 				}
 			}
 		}
@@ -339,13 +374,14 @@ class ComputerVisionEngine {
 	subproblemsTreatment(subproblems) {
 		for (var i = 0; i < subproblems.length; i++) {
 			// TODO: Definir forma de transmisión de la tipología de preguntas.
-			/*if (responsesTypes[i] == 'text') {
+			//if (responsesTypes[i] == 'text') {
 				let textProblemSolver = new TextProblemSolver(subproblems[i]);
 				let text = textProblemSolver.solve();
-			} else if (responsesTypes[i] == 'icons_problem') {*/
-				let iconsProblemSolver = new IconsProblemSolver(subproblems[i]);
-				let response = iconsProblemSolver.solve();
-				console.log(response);
+				return text;
+			//} else if (responsesTypes[i] == 'icons_problem') {*/
+			//	let iconsProblemSolver = new IconsProblemSolver(subproblems[i]);
+			//	let response = iconsProblemSolver.solve();
+			//	console.log(response);
 			//}
 		}
 	}
@@ -372,8 +408,8 @@ class ComputerVisionEngine {
 		let subproblems = this.generateSubProblemImages(responseAreas);
 
 		// Treate each subproblem image (as a matrix)
-		let results = this.subproblemsTreatment([subproblems[3]]);
-		cv.imwrite("./subproblem.png", subproblems[3]);
+		let results = this.subproblemsTreatment([subproblems[2]]);
+		cv.imwrite("./subproblem.png", subproblems[2]);
 		
 		//return results;
 		//return this.toShowImage;
