@@ -128,17 +128,54 @@ class CheckboxesProblemSolver extends ComputerVisionEngineProblemSolver {
 
 	/**
 	 * 
+	 * @param {*} contours 
+	 */
+	generateROIs(contours) {
+		let rois = [];
+		
+		for (const c of contours) {
+			rois.push(this.problemImage.getRegion(c.boundingRect()));
+		}
+
+		return subProblemImages;
+	}
+
+	/**
+	 * 
 	 */
 	solve() {
 		
-		// Obtain contours
+		// Obtain contours of boxes
+		
 
-		// Extract boxes from contours
-
-		// Boxes depuration
+		// Extract boxes ROIs images
+		let boxesROIs = this.generateROIs(contours);
 
 		// Checked box detection
-	
+		let sum = []
+		for (const roi of boxesROIs) {
+			let binaryROI1 = roi.threshold(0, 255, cv.THRESH_TOZERO);
+			let binaryROI2 = roi.threshold(200, 255, cv.THRESH_TOZERO);
+
+			let diff = binaryROI2 - binaryROI1;
+
+			sum.push(diff.countNonZero());
+		}
+		
+		//
+		return sum.indexOf(Math.max(...sum));
+	}
+
+	generateSubProblemImages(contours) {
+		let subProblemImages = [];
+
+		for (const c of contours) {
+			let rect = c.boundingRect()
+			let regionOfInterest = this.grayScaleImage.getRegion(rect);
+			subProblemImages.push(regionOfInterest);
+		}
+
+		return subProblemImages;
 	}
 }
 
