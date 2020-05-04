@@ -34,9 +34,7 @@ export default {
           question_label: "Question 1 de prueba",
           type: "",
           checkBoxes: ["Uno", "Dos", "Tres"],
-          checkBoxes_selected: {
-            'selected': ""
-          },
+          checkBox_selected: "",
           answer: ""
         }
       ]
@@ -52,7 +50,8 @@ export default {
   },
   methods: {
     saveForm(){
-      
+      var aux = this.questions[0];
+      console.log("Contenido de la pregunta: ", aux);
     }
   },
   mounted(){
@@ -61,11 +60,7 @@ export default {
       question_label: "Question 2 de prueba",
       type:"",
       checkBoxes: ["Uno", "Dos", "Tres"],
-      checkBoxes_selected: {
-        'Uno': "",
-        'Dos': "",
-        'Tres': ""
-      },
+      checkBox_selected: "",
       answer:""
     })
   }

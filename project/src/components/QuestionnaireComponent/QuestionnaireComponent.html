@@ -46,7 +46,7 @@
                                     <!-- Checkbox answers -->
                                     <div>
                                         <label v-for="(checkBox, index) in question.checkBoxes">
-                                            <input type="radio" :key="index" v-model="question.checkBoxes_selected['selected']" 
+                                            <input type="radio" :key="index" v-model="question.checkBox_selected" 
                                                 :name="question.index" :value="checkBox"> {{ checkBox }}
                                         </label>
                                     </div>
