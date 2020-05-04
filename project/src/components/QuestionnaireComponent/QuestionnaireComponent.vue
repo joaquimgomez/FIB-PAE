@@ -25,14 +25,18 @@ export default {
       },
       ruleForm: {
         name: "",
-        age: ""
+        age: "44"
       },
 
       questions:[
         {
-          index: "",
+          index: "0",
           question_label: "Question 1 de prueba",
           type: "",
+          checkBoxes: ["Uno", "Dos", "Tres"],
+          checkBoxes_selected: {
+            'selected': ""
+          },
           answer: ""
         }
       ]
@@ -47,13 +51,21 @@ export default {
     ])
   },
   methods: {
-    
+    saveForm(){
+      
+    }
   },
   mounted(){
     this.questions.push({
-      index:"",
+      index:"1",
       question_label: "Question 2 de prueba",
       type:"",
+      checkBoxes: ["Uno", "Dos", "Tres"],
+      checkBoxes_selected: {
+        'Uno': "",
+        'Dos': "",
+        'Tres': ""
+      },
       answer:""
     })
   }

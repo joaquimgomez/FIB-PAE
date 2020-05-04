@@ -10,18 +10,22 @@
                 <br>
                 <el-form ref="ruleForm" :model="ruleForm" label-width="75px">
                     <!-- Name -->
-                    <el-col :xs="24" :sm="23">
-                        <el-form-item :label="labels.name" prop="name">
-                            <el-input placeholder="Please input name or ID" v-model="ruleForm.name"></el-input>
-                        </el-form-item>
-                    </el-col> 
+                    <el-row>
+                        <el-col :xs="24" :sm="23">
+                            <el-form-item :label="labels.name" prop="name">
+                                <el-input placeholder="Please input name or ID" v-model="ruleForm.name"></el-input>
+                            </el-form-item>
+                        </el-col> 
+                    </el-row>
                 
                     <!-- Age -->
-                    <el-col :xs="24" :sm="23">
-                        <el-form-item :label="labels.age" prop="age">
-                            <el-input placeholder="Please input age" v-model="ruleForm.age"></el-input>
-                        </el-form-item>
-                    </el-col>
+                    <el-row>
+                        <el-col :xs="24" :sm="23">
+                            <el-form-item :label="labels.age" prop="age">
+                                <el-input placeholder="Please input age" v-model="ruleForm.age"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
 
                     <br>
                     <el-col :xs="24" :sm="22">
@@ -31,35 +35,28 @@
 
                     <div v-for="(question, index) in questions">
                         <!-- Question -->
-                        <el-col :xs="24" :sm="23">
-                            <el-form-item prop="question" style="margin-top:20px;">
-                                <label style="color:rgb(105, 103, 103);font-size: initial;">{{ question.question_label }}</label>
-                                <el-input v-model="question.answer" type="textarea" :autosize="{ minRows: 2, maxRows: 6 }"></el-input>
-                            </el-form-item>
-                        </el-col>
+                        <el-row>
+                            <el-col :xs="24" :sm="23">
+                                <el-form-item prop="question" style="margin-top:20px;">
+                                    <label style="color:rgb(105, 103, 103);font-size: initial;">{{ question.question_label }}</label>
+
+                                    <!-- Text answers -->
+                                    <el-input v-model="question.answer" type="textarea" :autosize="{ minRows: 2, maxRows: 6 }"></el-input>
+
+                                    <!-- Checkbox answers -->
+                                    <div>
+                                        <label v-for="(checkBox, index) in question.checkBoxes">
+                                            <input type="radio" :key="index" v-model="question.checkBoxes_selected['selected']" 
+                                                :name="question.index" :value="checkBox"> {{ checkBox }}
+                                        </label>
+                                    </div>
+
+                                    <!-- Image answers -->
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
                     </div>
 
-                    
-
-                    <!-- Question 2
-                    <el-col :xs="24" :sm="23">
-                        <el-form-item prop="question_2">
-                            <label style="color:rgb(105, 103, 103);font-size: initial;">{{ labels.question_2 }}</label>
-                            <el-input v-model="ruleForm.question_2" type="textarea" :autosize="{ minRows: 2, maxRows: 6 }"></el-input>
-                        </el-form-item>
-                    </el-col> -->
-                    
-
-
-                        <!-- Type -->
-                        <!-- <el-col :xs="24" :sm="6" :md="6" :lg="6">
-                            <el-form :label="labels.type" prop="type">
-                                <label for="labels.type">Tipo</label>
-                                <el-select v-model="ruleForm.type" filterable clearable @change="clearList('ruleForm')">
-                                    <el-option v-for="item in combo.types" :key="item" :label="item" :value="item"></el-option>
-                                </el-select>
-                            </el-form>
-                        </el-col> -->
                         <!-- Answer -->
                         <!-- <el-col :xs="24" :sm="6" :md="6" :lg="6">
                             <el-form :label="labels.answer" prop="answer">
