@@ -8,7 +8,7 @@
                     </el-col>
                 </el-row>
                 <br>
-                <el-form ref="form" :model="form" label-width="75px">
+                <el-form ref="ruleForm" :model="ruleForm" label-width="75px">
                     <!-- Name -->
                     <el-col :xs="24" :sm="23">
                         <el-form-item :label="labels.name" prop="name">
@@ -22,8 +22,33 @@
                             <el-input placeholder="Please input age" v-model="ruleForm.age"></el-input>
                         </el-form-item>
                     </el-col>
+
                     <br>
-                    <span>Thank you for taking the time to fill in this questionnaire. Your opinions are really important to us.</span>
+                    <el-col :xs="24" :sm="22">
+                        <span style="margin-left: 75px;color:rgb(105, 103, 103);;">Thank you for taking the time to fill in this questionnaire. Your opinions are really important to us.</span>
+                    </el-col>
+                    <br>
+
+                    <div v-for="(question, index) in questions">
+                        <!-- Question -->
+                        <el-col :xs="24" :sm="23">
+                            <el-form-item prop="question" style="margin-top:20px;">
+                                <label style="color:rgb(105, 103, 103);font-size: initial;">{{ question.question_label }}</label>
+                                <el-input v-model="question.answer" type="textarea" :autosize="{ minRows: 2, maxRows: 6 }"></el-input>
+                            </el-form-item>
+                        </el-col>
+                    </div>
+
+                    
+
+                    <!-- Question 2
+                    <el-col :xs="24" :sm="23">
+                        <el-form-item prop="question_2">
+                            <label style="color:rgb(105, 103, 103);font-size: initial;">{{ labels.question_2 }}</label>
+                            <el-input v-model="ruleForm.question_2" type="textarea" :autosize="{ minRows: 2, maxRows: 6 }"></el-input>
+                        </el-form-item>
+                    </el-col> -->
+                    
 
 
                         <!-- Type -->
@@ -53,6 +78,7 @@
                             <el-button type="info" plain size="small" icon="el-icon-check" @click="saveForm()">Save</el-button>
                         </el-col>
                     </el-row>
+
                 </el-form>
             </el-card>
         </el-col>

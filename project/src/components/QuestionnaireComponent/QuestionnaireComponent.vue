@@ -14,28 +14,48 @@ Vue.use(VueAxios, axios);
 Vue.use(Vuex)
 
 export default {
-  name: "AddTutorialComponent",
+  name: "QuestionnaireComponent",
   data() {
     return {
       name__view: "Questionnaire",
 
       labels:{
         name: "Name",
-        age: "Age",
+        age: "Age"
       },
       ruleForm: {
         name: "",
-        age: "",
-      }
+        age: ""
+      },
+
+      questions:[
+        {
+          index: "",
+          question_label: "Question 1 de prueba",
+          type: "",
+          answer: ""
+        }
+      ]
+
+      
     }
     
   },
+  components: {},
   computed: {
     ...mapState([
     ])
   },
   methods: {
     
+  },
+  mounted(){
+    this.questions.push({
+      index:"",
+      question_label: "Question 2 de prueba",
+      type:"",
+      answer:""
+    })
   }
 };
 
