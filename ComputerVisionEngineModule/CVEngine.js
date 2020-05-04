@@ -1,20 +1,38 @@
-// --------------- REQUIRES ---------------
+/**
+ * COMPUTER VISION ENGINE MODULE
+ * 
+ * This is a Node.js module designed and implemented in order to solve the computer vision problem of the main project.
+ * This problem is the information extraction from a taked image containing a poll.
+ * 
+ * In order to resolve the problem this module contains the following classes:
+ * 	- ComputerVisionEngine - The main class and the entry point to the module.
+ * 	- ComputerVisionEngineProblemSolver - Superclass for the different needed solvers.
+ * 	- TextProblemSolver - Solver for the problem of a ROI containing text.
+ * 	- CheckboxesProblemSolver - Solver for the problem of a ROI checkboxes.
+ * 	- IconsProblemSolver - Solver for the problem of a ROI containing icons to be crossed out.
+ * 
+ * This module also contains the GCPCommunication submodule.
+ * The submodule allows the TextProblemSolver class to solve subproblems by calling the Vision API of the Google Cloud Platform.
+ * 
+ * As a Node.js module, this one and GCPCommunication requires the following Node.js modules installed on the environment:
+ * fs, opencv4nodejs, @google-cloud/vision.
+ * 
+ * @module CVEngine
+ * @author Joaquim Gomez <9joaquimgomez@gmail.com>
+ */
+
+ 
+// --------------- REQUIRED ---------------
 const fs = require('fs');
 const cv = require('opencv4nodejs');
 const gcpc = require('./GCPCommunication/TextDetectionGCPCommunication.js');
 
 
-
 // --------------- CONSTANTS ---------------
-const MIN_CANNY_ALGORITHM = 190;	// TODO: Doc
-const MAX_CANNY_ALGORITHM = 200;	// TODO: Doc
-const MINIMUM_AREA_FACTOR = 1/10;	// TODO: Doc
-//const cv = require('./opencv.js');
-//const FIND_CONTOURS_RETRIEVAL_MODE = cv.RETR_EXTERNAL;				// TODO: Doc
-//const FIND_CONTOURS_REPRESENTATION_MODE = cv.CHAIN_APPROX_NONE;	// TODO: Doc
-// TO DO: BLUR MODE AND PARAMETERS
-
-const DEFAULT_TMP_IMAGES_PATH = './tmp/';
+const DEFAULT_TMP_IMAGES_PATH = './tmp/';	// Path for the tmp images
+const MIN_CANNY_ALGORITHM = 190;			// Max threshold for the Canny's Algorithm.
+const MAX_CANNY_ALGORITHM = 200;			// Min threshold for the Canny's Algorithm.
+const MINIMUM_AREA_FACTOR = 1/10;			// TODO: Doc
 
 
 // --------------- CLASSES ---------------
@@ -116,14 +134,22 @@ class CheckboxesProblemSolver extends ComputerVisionEngineProblemSolver {
 
 	/**
 	 * 
+	 * @param {*} contours 
 	 */
-	isABox(contour) {
-		let approx = new cv.Mat();
+	extractImportantContours(contours) {
+		let boxesContours = [];
 
-		// Get polygon
-		cv.approxPolyDP(contour, approx, 0.01*cv.arcLength(contour, true), true);
+		for (let i = 0; i < contours.length; i++) {
+			let approx = contours[i].approxPolyDP(0.01*c.arcLength(true), true);
+			let rect = contours[i].boundingRect();
+			let ar = rect.width / rect.height;
 
-		return (approx.size().height == 4);
+			if (approx.length == 4 && (ar >= 0.95 && ar <= 1.05)) {
+				boxesContours.push(contours[i]);
+			}
+		}
+
+		return boxesContours;
 	}
 
 	/**
@@ -133,8 +159,8 @@ class CheckboxesProblemSolver extends ComputerVisionEngineProblemSolver {
 	generateROIs(contours) {
 		let rois = [];
 		
-		for (const c of contours) {
-			rois.push(this.problemImage.getRegion(c.boundingRect()));
+		for (let i = 0; i < contours.length; i++) {
+			rois.push(this.problemImage.getRegion(contours[i].boundingRect()));
 		}
 
 		return subProblemImages;
@@ -146,10 +172,16 @@ class CheckboxesProblemSolver extends ComputerVisionEngineProblemSolver {
 	solve() {
 		
 		// Obtain contours of boxes
-		
+		let edges = blurred_im.canny(MIN_CANNY_ALGORITHM, MAX_CANNY_ALGORITHM);
+
+		// Looking for contours
+		let contours = edges.findContours(cv.RETR_LIST, cv.CHAIN_APPROX_NONE);
+
+		// Highlighted contours extraction
+		let boxesContours = extractImportantContours(contours);
 
 		// Extract boxes ROIs images
-		let boxesROIs = this.generateROIs(contours);
+		let boxesROIs = this.generateROIs(boxesContours);
 
 		// Checked box detection
 		let sum = []
@@ -166,17 +198,6 @@ class CheckboxesProblemSolver extends ComputerVisionEngineProblemSolver {
 		return sum.indexOf(Math.max(...sum));
 	}
 
-	generateSubProblemImages(contours) {
-		let subProblemImages = [];
-
-		for (const c of contours) {
-			let rect = c.boundingRect()
-			let regionOfInterest = this.grayScaleImage.getRegion(rect);
-			subProblemImages.push(regionOfInterest);
-		}
-
-		return subProblemImages;
-	}
 }
 
 
@@ -190,7 +211,7 @@ class IconsProblemSolver extends ComputerVisionEngineProblemSolver {
 	positionsAndRadiuDetectedCircles = new Array();		// (x, y, r) of every cirle detected
 	radiusExpansionFactor = 0.15;						//
 	thres = 200;										//
-	corners = new Array();
+	corners = new Array();								//
 
 	
 	// --------------- CLASS FUNCTIONS AREA ---------------
@@ -423,6 +444,25 @@ class ComputerVisionEngine {
 		}
 	}
 
+	/*subproblemsTreatment(subproblems) {
+		results = [];
+		for (let i = 0; i < subproblems.length; i++) {
+			let solver;
+			if(this.responsesTypes[i] == 'text') {
+				solver = new TextProblemSolver(subproblems[i]);
+			} else if (this.responsesTypes[i] == 'icons-checkbox') {
+				solver = new IconsProblemSolver(subproblems[i]);
+			} else {
+				solver = new CheckboxesProblemSolver(subproblems[i]);
+			}
+
+			let result = solver.solve();
+			results.push(result);
+		}
+
+		return results;
+	}*/
+
 	/**
 	 * 
 	 * @param {*} contours 
@@ -439,18 +479,23 @@ class ComputerVisionEngine {
 	 */
 	run() {
 		// Obtain response areas
-		let responseAreas = this.obtainResponseAreas();
+		//let responseAreas = this.obtainResponseAreas();
 
 		// Generate subproblem images (as a matrix)
-		let subproblems = this.generateSubProblemImages(responseAreas);
+		//let subproblems = this.generateSubProblemImages(responseAreas);
 
 		// Treate each subproblem image (as a matrix)
-		let results = this.subproblemsTreatment([subproblems[2]]);
-		cv.imwrite("./subproblem.png", subproblems[2]);
+		//let results = this.subproblemsTreatment([subproblems[2]]);
+		//cv.imwrite("./subproblem.png", subproblems[2]);
+
+		let solver = new CheckboxesProblemSolver(this.grayScaleImage);
+		console.log(solver.solve());
+
 		
-		//return results;
-		//return this.toShowImage;
+		return results;
 	}
 }
 
+
+// --------------- MODULE EXPORTS ---------------
 module.exports = ComputerVisionEngine;
