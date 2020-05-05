@@ -23,33 +23,38 @@
 
  
 // --------------- REQUIRED ---------------
+
 const fs = require('fs');
 const cv = require('opencv4nodejs');
 const gcpc = require('./GCPCommunication/TextDetectionGCPCommunication.js');
 
 
+
 // --------------- CONSTANTS ---------------
+
 const DEFAULT_TMP_IMAGES_PATH = './tmp/';	// Path for the tmp images
 const MIN_CANNY_ALGORITHM = 190;			// Max threshold for the Canny's Algorithm.
 const MAX_CANNY_ALGORITHM = 200;			// Min threshold for the Canny's Algorithm.
-const MINIMUM_AREA_FACTOR = 1/10;			// TODO: Doc
+const MINIMUM_AREA_FACTOR = 1/10;			// Factor for searching response areas.
+
 
 
 // --------------- CLASSES ---------------
+
 /**
- * 
+ * Superclass to define the subproblems solvers. It just has the constructor and an empty solve() funtion to be defined in the subclasses.
  */
 class ComputerVisionEngineProblemSolver {
 	// --------------- CLASS FIELDS ---------------
+
 	problemImage;			// Subimage of the problem
-	toShowProblemImage;		//
-	imagePath;				// Field for the image path for the subclass TextProblemSolver
+	toShowProblemImage;		// Image to show
 
 
 	// --------------- CLASS FUNCTIONS ---------------
 
 	/**
-	 * Precondition: The subimage (i.e. subproblem) is a valid area in gray scale color model.
+	 * Precondition: The subimage (i.e. subproblem) is a valid area in gray scale color model formatted as a OpenCV Mat.
 	 */
 	constructor(subimage) {
 		this.problemImage = subimage.copy();
@@ -57,24 +62,29 @@ class ComputerVisionEngineProblemSolver {
 	}
 
 	/**
-	 * 
+	 * Solving function to be defined in the subclasses.
 	 */
 	solve() {
 		// Nothing to solve in this superclass.
 	}
 }
 
+
 /**
- * 
+ * Subclass to solve the subproblems containing text to be digitalised.
+ * This class uses the submodule GCPCommunication in order to establish a communication with the Vision API of the Google Cloud Platform.
  */
 class TextProblemSolver extends ComputerVisionEngineProblemSolver {
 	// --------------- CLASS FIELDS ---------------
+
+	imagePath = './';	// Field for the image path for the subclass TextProblemSolver
 
 
 	// --------------- CLASS FUNCTIONS ---------------
 	
 	/**
-	 * 
+	 * Generates a temporal image file (in jpeg), with random name, in the path defined in the constant DEFAULT_TMP_IMAGES_PATH.
+	 * Save at the superclass the path of the generated file with the random name.
 	 */
 	generateTemporalImage() {
 		this.imagePath = DEFAULT_TMP_IMAGES_PATH + Math.floor(Math.random() * 100000) + '.jpeg';
@@ -83,7 +93,7 @@ class TextProblemSolver extends ComputerVisionEngineProblemSolver {
 	}
 
 	/**
-	 * 
+	 * Deletes the temporal generated image using the superclass saved path.
 	 */
 	deleteTemporalImage() {
 		try {
@@ -94,7 +104,7 @@ class TextProblemSolver extends ComputerVisionEngineProblemSolver {
 	}
 
 	/**
-	 * 
+	 * Solves the problem creating a client communication agent and requiring the text to the Vision API.
 	 * @param {*} imagePath 
 	 */
 	solve() {
@@ -123,8 +133,9 @@ class TextProblemSolver extends ComputerVisionEngineProblemSolver {
 	
 }
 
+
 /**
- * 
+ * Subclass to solve the subproblems containing checkboxes.
  */
 class CheckboxesProblemSolver extends ComputerVisionEngineProblemSolver {
 	// --------------- CLASS FIELDS ---------------
@@ -133,17 +144,24 @@ class CheckboxesProblemSolver extends ComputerVisionEngineProblemSolver {
 	// --------------- CLASS FUNCTIONS ---------------
 
 	/**
-	 * 
+	 * Extracts the important contours, i.e. the square forms, using the aspect relation in order to distinguish 
+	 * the possible squared contours from the rest.
 	 * @param {*} contours 
 	 */
 	extractImportantContours(contours) {
 		let boxesContours = [];
 
 		for (let i = 0; i < contours.length; i++) {
+			// Aproximation of the polygon
 			let approx = contours[i].approxPolyDP(0.01*c.arcLength(true), true);
+
+			// Rect calculus
 			let rect = contours[i].boundingRect();
+
+			// Aspect relation calculus
 			let ar = rect.width / rect.height;
 
+			// Valid aspect relation range defined in [0.95, 1.05]
 			if (approx.length == 4 && (ar >= 0.95 && ar <= 1.05)) {
 				boxesContours.push(contours[i]);
 			}
@@ -153,7 +171,7 @@ class CheckboxesProblemSolver extends ComputerVisionEngineProblemSolver {
 	}
 
 	/**
-	 * 
+	 * Generates ROIs from the superclass image using the passed contours.
 	 * @param {*} contours 
 	 */
 	generateROIs(contours) {
@@ -167,14 +185,14 @@ class CheckboxesProblemSolver extends ComputerVisionEngineProblemSolver {
 	}
 
 	/**
-	 * 
+	 * Solves the problem looking for a boxes' contours and making a sum of positive pixel 
+	 * (representing the cross inside the square/box) in a binary image.
 	 */
 	solve() {
-		
-		// Obtain contours of boxes
-		let edges = blurred_im.canny(MIN_CANNY_ALGORITHM, MAX_CANNY_ALGORITHM);
+		// Obtain edges of boxes
+		let edges = this.problemImage.canny(MIN_CANNY_ALGORITHM, MAX_CANNY_ALGORITHM);
 
-		// Looking for contours
+		// Looking for contours (as a RETR_LIST)
 		let contours = edges.findContours(cv.RETR_LIST, cv.CHAIN_APPROX_NONE);
 
 		// Highlighted contours extraction
@@ -189,35 +207,37 @@ class CheckboxesProblemSolver extends ComputerVisionEngineProblemSolver {
 			let binaryROI1 = roi.threshold(0, 255, cv.THRESH_TOZERO);
 			let binaryROI2 = roi.threshold(200, 255, cv.THRESH_TOZERO);
 
+			// Extraction of the cross
 			let diff = binaryROI2 - binaryROI1;
 
+			// Sum of positive pixel representing the cross
 			sum.push(diff.countNonZero());
 		}
 		
-		//
-		return sum.indexOf(Math.max(...sum));
+		// Return of the checked box index
+		return sum.indexOf(Math.max(...sum));		// TODO: ORDEN INVERSO DE LAS CAJAS ?????
 	}
 
 }
 
 
 /**
- * 
+ * Subclass to solve the subproblems containing icons to be selected.
  */
 class IconsProblemSolver extends ComputerVisionEngineProblemSolver {
 	// --------------- CLASS FIELDS ---------------
 
-	numberDetectedCirles = 0;							//
+	numberDetectedCirles = 0;							// Number of detected circles-
 	positionsAndRadiuDetectedCircles = new Array();		// (x, y, r) of every cirle detected
-	radiusExpansionFactor = 0.15;						//
-	thres = 200;										//
-	corners = new Array();								//
+	radiusExpansionFactor = 0.15;						// Factor to maka a expansion of radius of detected circles
+	thres = 200;										// Threshold to make corners filter
+	corners = new Array();								// Detected corners
 
 	
 	// --------------- CLASS FUNCTIONS AREA ---------------
 
 	/**
-	 * 
+	 * Process the OpenCV structure and constructs an array of 3-tuples with the coordinates x and y, and the redius r.
 	 * @param detectedCircles 
 	 */
 	constructCirclesEstructure(detectedCircles) {
@@ -226,6 +246,7 @@ class IconsProblemSolver extends ComputerVisionEngineProblemSolver {
 
 		// Data extraction and formatting
 		for (let i = 0; i < this.numberDetectedCirles; ++i) {
+			// The OpenCV structure should be interpreted as a data32F
 			let x = detectedCircles.data32F[i * 3];
 			let y = detectedCircles.data32F[i * 3 + 1];
 			let r = detectedCircles.data32F[i * 3 + 2];
@@ -241,31 +262,25 @@ class IconsProblemSolver extends ComputerVisionEngineProblemSolver {
 	}
 
 	/**
-	 * 
+	 * Detect the corners inside the ROI
 	 */
 	cornersDetection() {
 		// Corners detection
 		let corners = this.problemImage.cornerHarris(2, 3, 0.04);
-		//let corners = new cv.Mat();
-		//cv.cornerHarris(this.problemImage, corners, 2, 3, 0.04);
 
 		// Corners normalization
 		let corners_norm = corners.normalize(0, 255, cv.NORM_MINMAX);
-		//let corners_norm = new cv.Mat();
-		//cv.normalize(corners, corners_norm, 0, 255, cv.NORM_MINMAX);
 
 		// Scaling corners
 		let corners_norm_scaled = corners_norm.convertScaleAbs();
-		//let corners_norm_scaled = new cv.Mat();
-		//cv.convertScaleAbs(corners_norm, corners_norm_scaled);
 
 		// Corners extraction based on a thres
 		iteratingCornersX: for (let i = 0; i < corners_norm_scaled.rows; ++i) {
 			iteratingCornersY: for (let j = 0; j < corners_norm_scaled.cols; ++j) {
-				let value = corners_norm_scaled.at(i, j);//[i * corners_norm_scaled.cols * corners_norm_scaled.channels + j * corners_norm_scaled.channels];
+				let value = corners_norm_scaled.at(i, j); //[i * corners_norm_scaled.cols * corners_norm_scaled.channels + j * corners_norm_scaled.channels];
 
 				if (value >= this.thres) {
-					// Corners contains a list of pairs (x,y)
+					// Corners contains a list of pairs (x, y) saving pairs of (j, i) due to the inverted orientation
 					this.corners.push(new Array(j,i));
 				}
 			}
@@ -273,15 +288,14 @@ class IconsProblemSolver extends ComputerVisionEngineProblemSolver {
 	}
 
 	/**
-	 * 
+	 * Solve the problem detecting the possible corners of the cross over the icon.
+	 * The obtained solution is based on the following expected ordering of the icons: Happy, Meh, Sad.
 	 */
 	solve() {
 		// Circle detection
 		let circles = this.problemImage.houghCircles(cv.HOUGH_GRADIENT, 1.5, 200);
-		//let circles = new cv.Mat();
-		//cv.HoughCircles(this.problemImage, circles, cv.HOUGH_GRADIENT, 1.5, 200);//, minRadius=0, maxRadius=0);
 
-		// Circle estructure construction sorted (at this.positionsAndRadiuDetectedCircles)
+		// Circle sorted structure construction (at this.positionsAndRadiuDetectedCircles)
 		this.constructCirclesEstructure(circles);
 
 		// Corners detection (at this.corners)
@@ -291,6 +305,7 @@ class IconsProblemSolver extends ComputerVisionEngineProblemSolver {
 		let cornersPerCircle = new Array(this.numberDetectedCirles);
 		cornersPerCircle.fill(0);
 
+		// Summing all the corners inside the expanded radius of the three circles
 		iteratingCorners: for (let i = 0; i < this.corners.length; ++i) {
 			let xCorner = this.corners[i][0];
 			let yCorner = this.corners[i][1];
@@ -314,8 +329,7 @@ class IconsProblemSolver extends ComputerVisionEngineProblemSolver {
 			}
 		}
 
-		// Solution generation and return
-		// Solution based on the following ordering: Happy, Meh, Sad
+		// The solution is the circle with the maximum count of corners inside its expanded radius
 		let indexOfMaxCountPerCircle = cornersPerCircle.indexOf(Math.max(...cornersPerCircle));
 
 		if (indexOfMaxCountPerCircle == 0) {
@@ -333,13 +347,17 @@ class IconsProblemSolver extends ComputerVisionEngineProblemSolver {
 
 
 /**
+ * Main class and the entry point to the module. With the constructor receibes the images to be processed and with the solve() function
+ * separates the original image in multiple ROIs, in order to solve each subproblem individually.
  * 
+ * Precondition (for the correct functioning): The libraries opencv4nodejs, opencv4nodejs and the submodule GCPCommunication are loaded on the environment.
+ * Also, the image sended to the constructor is in a valid OpenCV format (i.e. as a Mat).
  */
 class ComputerVisionEngine {
 	// --------------- CLASS FIELDS ---------------
 
 	image;				// Original Image
-	grayScaleImage;	// Gray Scale Image
+	grayScaleImage;		// Gray Scale Image
 	toShowImage;		// Image to show
 	responsesTypes;		// Array with the types of the questions (in order)
 
@@ -347,11 +365,12 @@ class ComputerVisionEngine {
 	// --------------- CLASS FUNCTIONS ---------------
 
 	/**
-	 * Precondition: OpenCV library is loaded and the passed image is in a correct format.
-	 * In debug mode the image format should be the ID of the canvas.
+	 * Receives a valid Mat formatted image to be processed. Creates its versions in gray scale and a copy in order to make a possible
+	 * view of the image.
 	 * @param {*} image 
 	 */
 	constructor(image) {
+		// Image copies
 		this.image = image;
 		this.grayScaleImage = this.image.copy();
 		this.toShowImage = this.image.copy();
@@ -363,7 +382,7 @@ class ComputerVisionEngine {
 	}
 
 	/**
-	 * Retuns true if it has 4 corners, i.e. it is a square or rectangle.
+	 * Retuns true if the contour received as a parameter has 4 corners, i.e. it is a square or rectangle.
 	 * @param {*} contour 
 	 */
 	has4Corners(contour) {
@@ -372,9 +391,10 @@ class ComputerVisionEngine {
 		return (approx.length == 4);
 	}
 
-	/*
-		TODO: Doc
-	*/
+	/**
+	 * Find the response areas looking for valid contours obtained with the Canny's Algorithm and the findContours OpenCV function.
+	 * Pre-perform a Gaussian blur to reduce possible noise.
+	 */
 	obtainResponseAreas() {
 		// Blur image to clean noise
 		let ksize = new cv.Size(5, 5);
@@ -383,10 +403,10 @@ class ComputerVisionEngine {
 		// Edge detection with Canny's Algorithm
 		let edges = blurred_im.canny(MIN_CANNY_ALGORITHM, MAX_CANNY_ALGORITHM);
 
-		// Looking for contours
+		// Looking for contours (as a RETR_EXTERNAL)
 		let contours = edges.findContours(cv.RETR_EXTERNAL, cv.CHAIN_APPROX_NONE);
 
-		//
+		// Search for a possible valid response areas (squares or rectangles)
 		let potentialAreas = [];
 		var maxArea = 0;
 		for (let i = 0; i < contours.length; i++) {
@@ -400,6 +420,7 @@ class ComputerVisionEngine {
 			}
 		}
 
+		// Extract the valid response areas using its geometric area.
 		let responseAreas = [];
 		for (const pa of potentialAreas) {
 			if (pa.area >= maxArea * MINIMUM_AREA_FACTOR)	responseAreas.push(pa);
@@ -410,7 +431,7 @@ class ComputerVisionEngine {
 	}
 
 	/**
-	 * 
+	 * Extract que ROIs for the subproblems treatment, generatin subMats of the original image Mat.
 	 * @param {*} contours 
 	 */
 	generateSubProblemImages(contours) {
@@ -426,25 +447,10 @@ class ComputerVisionEngine {
 	}
 
 	/**
-	 * 
+	 * Creates a solver for each ROI (using the expected type on the are) and performs the resolution.
 	 * @param {*} subproblems 
 	 */
 	subproblemsTreatment(subproblems) {
-		for (var i = 0; i < subproblems.length; i++) {
-			// TODO: Definir forma de transmisión de la tipología de preguntas.
-			//if (responsesTypes[i] == 'text') {
-				let textProblemSolver = new TextProblemSolver(subproblems[i]);
-				let text = textProblemSolver.solve();
-				return text;
-			//} else if (responsesTypes[i] == 'icons_problem') {*/
-			//	let iconsProblemSolver = new IconsProblemSolver(subproblems[i]);
-			//	let response = iconsProblemSolver.solve();
-			//	console.log(response);
-			//}
-		}
-	}
-
-	/*subproblemsTreatment(subproblems) {
 		results = [];
 		for (let i = 0; i < subproblems.length; i++) {
 			let solver;
@@ -461,10 +467,11 @@ class ComputerVisionEngine {
 		}
 
 		return results;
-	}*/
+	}
 
 	/**
-	 * 
+	 * Draw the detected response areas contours on the image to show.
+	 * This is a testing purpose function.
 	 * @param {*} contours 
 	 */
 	drawContours(contours) {
@@ -475,7 +482,7 @@ class ComputerVisionEngine {
 	}
 
 	/**
-	 * 
+	 * Starts the resolution and returns the results. // TODO: DESCOMENTAR TODO
 	 */
 	run() {
 		// Obtain response areas
@@ -490,8 +497,7 @@ class ComputerVisionEngine {
 
 		let solver = new CheckboxesProblemSolver(this.grayScaleImage);
 		console.log(solver.solve());
-
-		
+	
 		return results;
 	}
 }

@@ -1,7 +1,7 @@
 build/*
 node_modules/*
 assets/*
-python-test/*
+python-tests/*
 
 package-lock.json
 *.png
