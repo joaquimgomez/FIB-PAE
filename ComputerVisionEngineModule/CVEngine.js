@@ -35,7 +35,7 @@ const gcpc = require('./GCPCommunication/TextDetectionGCPCommunication.js');
 const DEFAULT_TMP_IMAGES_PATH = './tmp/';	// Path for the tmp images
 const MIN_CANNY_ALGORITHM = 190;			// Max threshold for the Canny's Algorithm.
 const MAX_CANNY_ALGORITHM = 200;			// Min threshold for the Canny's Algorithm.
-const MINIMUM_AREA_FACTOR = 1/10;			// Factor for searching response areas.
+const MINIMUM_AREA_FACTOR = 1/25;			// Factor for searching response areas.
 
 
 
@@ -122,8 +122,11 @@ class TextProblemSolver extends ComputerVisionEngineProblemSolver {
 				console.error(err);
 				return 'None';
 			});
+			
+			setTimeout(() => {  
+				this.deleteTemporalImage();
+			}, 1000);
 
-			this.deleteTemporalImage();
 			return text;
 		}
 
@@ -143,17 +146,32 @@ class CheckboxesProblemSolver extends ComputerVisionEngineProblemSolver {
 	
 	// --------------- CLASS FUNCTIONS ---------------
 
+
+	/**
+	 * Returns true if rect1 is contained by rect2
+	 * @param {*} rect1 
+	 * @param {*} rect2 
+	 */
+	rectInsideRect(rect1, rect2) {
+		//Rect = { x, y, width, height }
+		return (rect2.x < rect1.x && rect1.x < rect2.x+rect2.width
+			&& rect2.y < rect1.y && rect1.y < rect2.y+rect2.height
+			&& rect2.x < rect1.x+rect1.width && rect1.x+rect1.width < rect2.x+rect2.width
+			&& rect2.y < rect1.y+rect1.height && rect1.y+rect1.height < rect2.y+rect2.height)
+	}
+
 	/**
 	 * Extracts the important contours, i.e. the square forms, using the aspect relation in order to distinguish 
 	 * the possible squared contours from the rest.
 	 * @param {*} contours 
 	 */
 	extractImportantContours(contours) {
-		let boxesContours = [];
+		let boxesContoursProv = [];
 
+		let maxArea = 0;
 		for (let i = 0; i < contours.length; i++) {
 			// Aproximation of the polygon
-			let approx = contours[i].approxPolyDP(0.01*c.arcLength(true), true);
+			let approx = contours[i].approxPolyDP(0.05*contours[i].arcLength(true), true);
 
 			// Rect calculus
 			let rect = contours[i].boundingRect();
@@ -163,11 +181,32 @@ class CheckboxesProblemSolver extends ComputerVisionEngineProblemSolver {
 
 			// Valid aspect relation range defined in [0.95, 1.05]
 			if (approx.length == 4 && (ar >= 0.95 && ar <= 1.05)) {
-				boxesContours.push(contours[i]);
+				boxesContoursProv.push(contours[i]);
+				
+				if(maxArea < contours[i].area) 	maxArea = contours[i].area;
 			}
 		}
 
-		return boxesContours;
+		// Deleting possible errors
+		let boxesContours = []
+		for (let i = 0; i < boxesContoursProv.length; i++) {
+			let rectCurrentContour = boxesContoursProv[i].boundingRect();
+
+			let tmp = boxesContoursProv.slice(0);
+			tmp.splice(i, 1);
+
+			// Checking if the current contour is contained by antoher
+			let insert = false;
+			for (let j = 0; j < tmp.length; j++) {
+				insert = insert || this.rectInsideRect(rectCurrentContour, tmp[j].boundingRect())
+			}
+
+			if (insert && boxesContoursProv[i].area >= maxArea * MINIMUM_AREA_FACTOR){
+				boxesContours.push(boxesContoursProv[i]);
+			}
+		}
+
+		return boxesContours.reverse();
 	}
 
 	/**
@@ -181,7 +220,7 @@ class CheckboxesProblemSolver extends ComputerVisionEngineProblemSolver {
 			rois.push(this.problemImage.getRegion(contours[i].boundingRect()));
 		}
 
-		return subProblemImages;
+		return rois;
 	}
 
 	/**
@@ -190,13 +229,13 @@ class CheckboxesProblemSolver extends ComputerVisionEngineProblemSolver {
 	 */
 	solve() {
 		// Obtain edges of boxes
-		let edges = this.problemImage.canny(MIN_CANNY_ALGORITHM, MAX_CANNY_ALGORITHM);
+		let thres = this.problemImage.threshold(160, 255, cv.THRESH_TOZERO);
 
 		// Looking for contours (as a RETR_LIST)
-		let contours = edges.findContours(cv.RETR_LIST, cv.CHAIN_APPROX_NONE);
+		let contours = thres.findContours(cv.RETR_LIST, cv.CHAIN_APPROX_NONE);
 
 		// Highlighted contours extraction
-		let boxesContours = extractImportantContours(contours);
+		let boxesContours = this.extractImportantContours(contours);
 
 		// Extract boxes ROIs images
 		let boxesROIs = this.generateROIs(boxesContours);
@@ -208,14 +247,14 @@ class CheckboxesProblemSolver extends ComputerVisionEngineProblemSolver {
 			let binaryROI2 = roi.threshold(200, 255, cv.THRESH_TOZERO);
 
 			// Extraction of the cross
-			let diff = binaryROI2 - binaryROI1;
+			let diff = binaryROI2.absdiff(binaryROI1);	// binaryROI2 - binaryROI1
 
 			// Sum of positive pixel representing the cross
 			sum.push(diff.countNonZero());
 		}
 		
 		// Return of the checked box index
-		return sum.indexOf(Math.max(...sum));		// TODO: ORDEN INVERSO DE LAS CAJAS ?????
+		return sum.indexOf(Math.max(...sum));
 	}
 
 }
@@ -242,17 +281,12 @@ class IconsProblemSolver extends ComputerVisionEngineProblemSolver {
 	 */
 	constructCirclesEstructure(detectedCircles) {
 		// Number of detected circles
-		this.numberDetectedCirles = detectedCircles.cols;
+		this.numberDetectedCirles = detectedCircles.length;
 
 		// Data extraction and formatting
 		for (let i = 0; i < this.numberDetectedCirles; ++i) {
-			// The OpenCV structure should be interpreted as a data32F
-			let x = detectedCircles.data32F[i * 3];
-			let y = detectedCircles.data32F[i * 3 + 1];
-			let r = detectedCircles.data32F[i * 3 + 2];
-
 			// Save point inside the structure;
-			this.positionsAndRadiuDetectedCircles.push(new Array(x, y, r));
+			this.positionsAndRadiuDetectedCircles.push(new Array(detectedCircles[i].x, detectedCircles[i].y, detectedCircles[i].z));
 		}
 
 		// Sort per x
@@ -293,7 +327,8 @@ class IconsProblemSolver extends ComputerVisionEngineProblemSolver {
 	 */
 	solve() {
 		// Circle detection
-		let circles = this.problemImage.houghCircles(cv.HOUGH_GRADIENT, 1.5, 200);
+		//let circles = this.problemImage.houghCircles(cv.HOUGH_GRADIENT, 1.5, 255);
+		let circles = this.problemImage.houghCircles(cv.HOUGH_GRADIENT, 1.5, this.problemImage.rows/8, 255)
 
 		// Circle sorted structure construction (at this.positionsAndRadiuDetectedCircles)
 		this.constructCirclesEstructure(circles);
@@ -321,9 +356,11 @@ class IconsProblemSolver extends ComputerVisionEngineProblemSolver {
 				let yCircleMinusR = yCircle - expandedCircleRadius;
 				let yCirclusPlusR = yCircle + expandedCircleRadius;
 
-				if (xCorner >= xCircleMinusR && xCorner <= xCirclePlusR &&
-					yCorner >= yCircleMinusR && yCorner <= yCirclusPlusR) {
-					++cornersPerCircle[j];
+				// xCircleMinusR < xCorner < xCirclePlusR && yCircleMinusR < yCorner < yCirclusPlusR
+
+				if (xCircleMinusR < xCorner && xCorner < xCirclePlusR
+					&& yCircleMinusR < yCorner && yCorner < yCirclusPlusR) {
+						++cornersPerCircle[j];
 					break iteratingCircles;
 				}
 			}
@@ -342,7 +379,6 @@ class IconsProblemSolver extends ComputerVisionEngineProblemSolver {
 			return 'None';
 		}
 	}
-
 }
 
 
@@ -369,13 +405,14 @@ class ComputerVisionEngine {
 	 * view of the image.
 	 * @param {*} image 
 	 */
-	constructor(image) {
+	constructor(image, typesQuestions) {
 		// Image copies
 		this.image = image;
 		this.grayScaleImage = this.image.copy();
 		this.toShowImage = this.image.copy();
 
-		// TODO: recibir los tipos de las preguntas
+		// Expected questions types
+		this.responsesTypes = typesQuestions;
 
 		// From RGB to Gray Scale
 		this.grayScaleImage = this.grayScaleImage.bgrToGray();
@@ -388,6 +425,10 @@ class ComputerVisionEngine {
 	has4Corners(contour) {
 		// Get polygon
 		let approx = contour.approxPolyDP(0.01*contour.arcLength(true), true);
+
+		let rect = contour.boundingRect();
+		let ar = rect.width / rect.height;
+
 		return (approx.length == 4);
 	}
 
@@ -451,7 +492,7 @@ class ComputerVisionEngine {
 	 * @param {*} subproblems 
 	 */
 	subproblemsTreatment(subproblems) {
-		results = [];
+		let results = [];
 		for (let i = 0; i < subproblems.length; i++) {
 			let solver;
 			if(this.responsesTypes[i] == 'text') {
@@ -475,29 +516,26 @@ class ComputerVisionEngine {
 	 * @param {*} contours 
 	 */
 	drawContours(contours) {
-		let color = new cv.Scalar(255,0,0,255);
+		let color = new cv.Vec3(255,0,0, );
+		
 		for (const c of contours) {
-			this.toShowImage.drawContours(c, 0, color, 5)
+			this.toShowImage.drawContours([c.getPoints()], -1, color,  { thickness: 3 });
 		}
 	}
 
 	/**
-	 * Starts the resolution and returns the results. // TODO: DESCOMENTAR TODO
+	 * Starts the resolution and returns the results.
 	 */
 	run() {
 		// Obtain response areas
-		//let responseAreas = this.obtainResponseAreas();
+		let responseAreas = this.obtainResponseAreas();
 
 		// Generate subproblem images (as a matrix)
-		//let subproblems = this.generateSubProblemImages(responseAreas);
+		let subproblems = this.generateSubProblemImages(responseAreas);
 
 		// Treate each subproblem image (as a matrix)
-		//let results = this.subproblemsTreatment([subproblems[2]]);
-		//cv.imwrite("./subproblem.png", subproblems[2]);
+		let results = this.subproblemsTreatment(subproblems);
 
-		let solver = new CheckboxesProblemSolver(this.grayScaleImage);
-		console.log(solver.solve());
-	
 		return results;
 	}
 }

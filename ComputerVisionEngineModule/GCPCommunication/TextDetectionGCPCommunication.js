@@ -22,6 +22,7 @@
 const vision = require('@google-cloud/vision');
 
 
+
 // --------------- MODULE FUNCTIONS ---------------
 
 /**
@@ -30,7 +31,7 @@ const vision = require('@google-cloud/vision');
 function createClient() {
 	try {
 		// Specifies the EU as location of the api endpoint
-		const clientOptions = {keyFilename: './GCPCommunication/credentials/Proyecto PAE-1d6f272c11d7.json', apiEndpoint: 'eu-vision.googleapis.com'};
+		const clientOptions = {keyFilename: './GCPCommunication/credentials/proyecto-pae-7440be643e92.json', apiEndpoint: 'eu-vision.googleapis.com'};
 
 		// Creates a client
 		const client = new vision.ImageAnnotatorClient(clientOptions);
@@ -61,9 +62,12 @@ async function getTextFromImage(client, imagePath) {
 	let fullTextAnnotation = result.fullTextAnnotation;
 
 	// Get the obtained text
-	const text = fullTextAnnotation.text;
-
-	return text;
+	if (fullTextAnnotation != null) {
+		const text = fullTextAnnotation.text;
+		return text;
+	} else {
+		return '';
+	}
 }
 
 
