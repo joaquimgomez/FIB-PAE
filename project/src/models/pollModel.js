@@ -9,7 +9,7 @@ const poll = function(poll) {
 }
 
 poll.create = (newpoll, result) => {
-    bd.query("INSERT INTO poll SET ?", newpoll, (err, res) => {
+    bd.query("INSERT INTO Poll SET ?", newpoll, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -21,7 +21,7 @@ poll.create = (newpoll, result) => {
 };
 
 poll.getAll = result => {
-    bd.query("SELECT * FROM poll", (err, res) => {
+    bd.query("SELECT * FROM Poll", (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -33,24 +33,30 @@ poll.getAll = result => {
 };
 
 poll.findById = (pollId, result) => {
-    bd.query('SELECT * FROM poll WHERE id = ' + pollId, (err, res) => {
+    bd.query('SELECT * FROM Poll WHERE id = ' + pollId, (err, res) => {
         if (err) {
             console.log("error: ", err);
-            result(err, null);
-            return;
+            result.err = err;
+            result.res = null;
+            return "f";
         }
         if (res.length) {
             console.log("found poll: ", res[0]);
-            result(null, res[0]);
-            return;
+            result.err = null;
+            result.res = res[0];
+            return "t";
         }
-        result({kind: "not_found"}, null);
+        else {
+            result.err = {kind: "not_found"};
+            result.res = null;
+            return "f";
+        }
     });
-};
+}
 
 poll.updateById = (id, poll, result) => {
     bd.query(
-      "UPDATE poll SET name = ?, org_id = ? WHERE id = ?",
+      "UPDATE Poll SET name = ?, org_id = ? WHERE id = ?",
       [poll.name, poll.adress, poll.phone, poll.web, id], (err, res) => {
         if (err) {
           console.log("error: ", err);
@@ -70,7 +76,7 @@ poll.updateById = (id, poll, result) => {
 };
 
 poll.remove = (id, result) => {
-    bd.query("DELETE FROM poll WHERE id = ?", id, (err, res) => {
+    bd.query("DELETE FROM Poll WHERE id = ?", id, (err, res) => {
     if (err) {
         console.log("error: ", err);
         result(null, err);
@@ -88,7 +94,7 @@ poll.remove = (id, result) => {
 };
 
 poll.removeAll = result => {
-    bd.query("DELETE FROM poll", (err, res) => {
+    bd.query("DELETE FROM Poll", (err, res) => {
     if (err) {
         console.log("error: ", err);
         result(null, err);

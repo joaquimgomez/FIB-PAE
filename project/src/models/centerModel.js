@@ -9,7 +9,7 @@ const center = function(center) {
 }
 
 center.create = (newcenter, result) => {
-    bd.query("INSERT INTO center SET ?", newcenter, (err, res) => {
+    bd.query("INSERT INTO Center SET ?", newcenter, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -21,7 +21,7 @@ center.create = (newcenter, result) => {
 };
 
 center.getAll = result => {
-    bd.query("SELECT * FROM center", (err, res) => {
+    bd.query("SELECT * FROM Center", (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -33,24 +33,28 @@ center.getAll = result => {
 };
 
 center.findById = (centerId, result) => {
-    bd.query('SELECT * FROM center WHERE id = ' + centerId, (err, res) => {
+    bd.query('SELECT * FROM Center WHERE id = ' + centerId, (err, res) => {
         if (err) {
             console.log("error: ", err);
-            result(err, null);
-            return;
+            result.err = err;
+            result.res = null;
+            return "f";
         }
         if (res.length) {
             console.log("found center: ", res[0]);
-            result(null, res[0]);
-            return;
+            result.err = null;
+            result.res = res[0];
+            return "t";
         }
-        result({kind: "not_found"}, null);
+        result.err = {kind: "not_found"};
+        result.res = null;
+        return "f";
     });
 };
 
 center.updateById = (id, center, result) => {
     bd.query(
-      "UPDATE center SET name = ?, adress = ? WHERE id = ?",
+      "UPDATE Center SET name = ?, adress = ? WHERE id = ?",
       [center.name, center.adress, center.phone, center.web, id], (err, res) => {
         if (err) {
           console.log("error: ", err);
@@ -70,7 +74,7 @@ center.updateById = (id, center, result) => {
 };
 
 center.remove = (id, result) => {
-    bd.query("DELETE FROM center WHERE id = ?", id, (err, res) => {
+    bd.query("DELETE FROM Center WHERE id = ?", id, (err, res) => {
     if (err) {
         console.log("error: ", err);
         result(null, err);
@@ -82,13 +86,13 @@ center.remove = (id, result) => {
         return;
     }
 
-    console.log("deleted center with id: ", id);
+    console.log("deleted Center with id: ", id);
     result(null, res);
     });
 };
 
 center.removeAll = result => {
-    bd.query("DELETE FROM center", (err, res) => {
+    bd.query("DELETE FROM Center", (err, res) => {
     if (err) {
         console.log("error: ", err);
         result(null, err);
