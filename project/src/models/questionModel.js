@@ -10,7 +10,7 @@ const question = function(question) {
 }
 
 question.create = (newquestion, result) => {
-    bd.query("INSERT INTO question SET ?", newquestion, (err, res) => {
+    bd.query("INSERT INTO Question SET ?", newquestion, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -22,7 +22,7 @@ question.create = (newquestion, result) => {
 };
 
 question.getAll = result => {
-    bd.query("SELECT * FROM question", (err, res) => {
+    bd.query("SELECT * FROM Question", (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -34,7 +34,7 @@ question.getAll = result => {
 };
 
 question.findById = (questionId, result) => {
-    bd.query('SELECT * FROM question WHERE id = ' + questionId, (err, res) => {
+    bd.query('SELECT * FROM Question WHERE id = ' + questionId, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -49,9 +49,25 @@ question.findById = (questionId, result) => {
     });
 };
 
+question.findByPollId = (pollId, result) => {
+    bd.query('SELECT * FROM Question WHERE enc_id = ' + pollId, (err, res) => {
+        if (err) {
+            console.log("error: ", err);
+            result(err, null);
+            return;
+        }
+        if (res.length) {
+            //console.log("found questions: ", res);
+            result(null, res);
+            return;
+        }
+        result({kind: "not_found"}, null);
+    });
+};
+
 question.updateById = (id, question, result) => {
     bd.query(
-      "UPDATE question SET enc_id = ?, body = ?, defined_answers = ? WHERE id = ?",
+      "UPDATE Question SET enc_id = ?, body = ?, defined_answers = ? WHERE id = ?",
       [question.name, question.adress, question.phone, question.web, id], (err, res) => {
         if (err) {
           console.log("error: ", err);
@@ -71,7 +87,7 @@ question.updateById = (id, question, result) => {
 };
 
 question.remove = (id, result) => {
-    bd.query("DELETE FROM question WHERE id = ?", id, (err, res) => {
+    bd.query("DELETE FROM Question WHERE id = ?", id, (err, res) => {
     if (err) {
         console.log("error: ", err);
         result(null, err);
@@ -89,7 +105,7 @@ question.remove = (id, result) => {
 };
 
 question.removeAll = result => {
-    bd.query("DELETE FROM question", (err, res) => {
+    bd.query("DELETE FROM Question", (err, res) => {
     if (err) {
         console.log("error: ", err);
         result(null, err);

@@ -11,7 +11,7 @@ const checkBox = function(checkBox) {
 }
 
 checkBox.create = (newcheckBox, result) => {
-    bd.query("INSERT INTO checkBox SET ?", newcheckBox, (err, res) => {
+    bd.query("INSERT INTO CheckBox SET ?", newcheckBox, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -23,7 +23,7 @@ checkBox.create = (newcheckBox, result) => {
 };
 
 checkBox.getAll = result => {
-    bd.query("SELECT * FROM checkBox", (err, res) => {
+    bd.query("SELECT * FROM CheckBox", (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -35,7 +35,7 @@ checkBox.getAll = result => {
 };
 
 checkBox.findById = (checkBoxId, result) => {
-    bd.query('SELECT * FROM checkBox WHERE id = ' + checkBoxId, (err, res) => {
+    bd.query('SELECT * FROM CheckBox WHERE id = ' + checkBoxId, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -50,9 +50,25 @@ checkBox.findById = (checkBoxId, result) => {
     });
 };
 
+checkBox.findByPollId = (PollId, result) => {
+    bd.query('SELECT * FROM CheckBox WHERE enc_id = ?',[PollId], (err, res) => {
+        if (err) {
+            console.log("error: ", err);
+            result(null, err);
+            return;
+        }
+        if (res.length) {
+            //console.log("found checkBoxs: ", res);
+            result(null, res);
+            return;
+        }
+        result({kind: "not_found"}, null);
+    });
+}
+
 checkBox.updateById = (id, checkBox, result) => {
     bd.query(
-      "UPDATE checkBox SET pre_id = ?, enc_id = ?, body = ?, image = ? WHERE id = ?",
+      "UPDATE CheckBox SET pre_id = ?, enc_id = ?, body = ?, image = ? WHERE id = ?",
       [checkBox.name, checkBox.adress, checkBox.phone, checkBox.web, id], (err, res) => {
         if (err) {
           console.log("error: ", err);
@@ -72,7 +88,7 @@ checkBox.updateById = (id, checkBox, result) => {
 };
 
 checkBox.remove = (id, result) => {
-    bd.query("DELETE FROM checkBox WHERE id = ?", id, (err, res) => {
+    bd.query("DELETE FROM CheckBox WHERE id = ?", id, (err, res) => {
     if (err) {
         console.log("error: ", err);
         result(null, err);
@@ -90,7 +106,7 @@ checkBox.remove = (id, result) => {
 };
 
 checkBox.removeAll = result => {
-    bd.query("DELETE FROM checkBox", (err, res) => {
+    bd.query("DELETE FROM CheckBox", (err, res) => {
     if (err) {
         console.log("error: ", err);
         result(null, err);
