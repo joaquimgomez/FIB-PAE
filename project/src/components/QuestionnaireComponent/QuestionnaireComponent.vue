@@ -28,16 +28,7 @@ export default {
         age: ""
       },
 
-      questions:[
-        // {
-        //   index: "0",
-        //   question_label: "Question 1 de prueba",
-        //   type: "text", //text - checkbox - image
-        //   checkBoxes: ["Uno", "Dos", "Tres"],
-        //   checkBox_selected: "",
-        //   answer: ""
-        // }
-      ],
+      questions:[],
 
       result:{
         id: 0,
@@ -72,14 +63,6 @@ export default {
     }
   },
   mounted(){
-    // this.questions.push({
-    //   index:"1",
-    //   question_label: "Question 2 de prueba",
-    //   type:"checkbox",
-    //   checkBoxes: ["Uno", "Dos", "Tres"],
-    //   checkBox_selected: "",
-    //   answer:""
-    // })
     var self = this;
 
     //Call get poll
@@ -88,8 +71,6 @@ export default {
         "http://localhost:3000/poll/1"
       )
       .then(response => {
-        console.log("response get poll: ", response.data.questions);
-
         var questions = response.data.questions;
 
         questions.forEach(q => {

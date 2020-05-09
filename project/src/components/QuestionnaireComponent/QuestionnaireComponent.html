@@ -37,20 +37,20 @@
                         <!-- Question -->
                         <el-row>
                             <el-col :xs="24" :sm="23">
-                                <el-form-item prop="question" style="margin-top:20px;">
+                                <el-form-item class="" prop="question" style="margin-top:20px;">
                                     <label style="color:rgb(105, 103, 103);font-size: initial;">{{ question.question_label }}</label>
 
                                     <!-- Text answers -->
                                     <div v-if="question.type == 'text'">
                                         <el-input v-model="question.answer" type="textarea" :autosize="{ minRows: 2, maxRows: 6 }"></el-input>
                                     </div>
-                                    
 
                                     <!-- Checkbox answers -->
-                                    <div v-else-if="question.type='checkbox'">
-                                        <label v-for="(checkBox, index) in question.checkBoxes">
-                                            <input type="radio" :key="index" v-model="question.checkBox_selected" 
+                                    <div class="" v-else-if="question.type='checkbox'">
+                                        <label class="container-radio" v-for="(checkBox, index) in question.checkBoxes" style="color:rgb(105, 103, 103);font-size: initial;">
+                                            <input  type="radio" :key="index" v-model="question.checkBox_selected" 
                                                 :name="question.index" :value="checkBox"> {{ checkBox }}
+                                                <span class="checkmark"></span>
                                         </label>
                                     </div>
 
