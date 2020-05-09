@@ -41,10 +41,13 @@
                                     <label style="color:rgb(105, 103, 103);font-size: initial;">{{ question.question_label }}</label>
 
                                     <!-- Text answers -->
-                                    <el-input v-model="question.answer" type="textarea" :autosize="{ minRows: 2, maxRows: 6 }"></el-input>
+                                    <div v-if="question.type == 'text'">
+                                        <el-input v-model="question.answer" type="textarea" :autosize="{ minRows: 2, maxRows: 6 }"></el-input>
+                                    </div>
+                                    
 
                                     <!-- Checkbox answers -->
-                                    <div>
+                                    <div v-else-if="question.type='checkbox'">
                                         <label v-for="(checkBox, index) in question.checkBoxes">
                                             <input type="radio" :key="index" v-model="question.checkBox_selected" 
                                                 :name="question.index" :value="checkBox"> {{ checkBox }}
@@ -52,21 +55,12 @@
                                     </div>
 
                                     <!-- Image answers -->
+                                    
+
                                 </el-form-item>
                             </el-col>
                         </el-row>
-                    </div>
-
-                        <!-- Answer -->
-                        <!-- <el-col :xs="24" :sm="6" :md="6" :lg="6">
-                            <el-form :label="labels.answer" prop="answer">
-                                <label for="labels.answer">Respuesta</label>
-                                <el-select v-model="ruleForm.answer" filterable clearable @change="clearList('ruleForm')">
-                                    <el-option v-for="item in combo.answers" :key="item" :label="item" :value="item"></el-option>
-                                </el-select>
-                            </el-form>
-                        </el-col> -->
-                        
+                    </div>                        
                 
                 
                     <el-row :gutter="24">

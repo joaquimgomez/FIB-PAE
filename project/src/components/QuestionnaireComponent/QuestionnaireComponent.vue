@@ -25,19 +25,29 @@ export default {
       },
       ruleForm: {
         name: "",
-        age: "44"
+        age: ""
       },
 
       questions:[
-        {
-          index: "0",
-          question_label: "Question 1 de prueba",
-          type: "",
-          checkBoxes: ["Uno", "Dos", "Tres"],
-          checkBox_selected: "",
-          answer: ""
-        }
-      ]
+        // {
+        //   index: "0",
+        //   question_label: "Question 1 de prueba",
+        //   type: "text", //text - checkbox - image
+        //   checkBoxes: ["Uno", "Dos", "Tres"],
+        //   checkBox_selected: "",
+        //   answer: ""
+        // }
+      ],
+
+      result:{
+        id: 0,
+        user_id: 0, 
+        enc_id: 0,
+        centr_id: 0,
+        enq_id: 0,
+        date: "",
+        respuestas: {}
+      }
 
       
     }
@@ -49,20 +59,67 @@ export default {
     ])
   },
   methods: {
+    launchNotify(title, message, type) {
+      this.$notify({
+        title: title,
+        message: message,
+        type: type
+      });
+    },
     saveForm(){
       var aux = this.questions[0];
       console.log("Contenido de la pregunta: ", aux);
     }
   },
   mounted(){
-    this.questions.push({
-      index:"1",
-      question_label: "Question 2 de prueba",
-      type:"",
-      checkBoxes: ["Uno", "Dos", "Tres"],
-      checkBox_selected: "",
-      answer:""
-    })
+    // this.questions.push({
+    //   index:"1",
+    //   question_label: "Question 2 de prueba",
+    //   type:"checkbox",
+    //   checkBoxes: ["Uno", "Dos", "Tres"],
+    //   checkBox_selected: "",
+    //   answer:""
+    // })
+    var self = this;
+
+    //Call get poll
+    //TODO ahora hardcoded el id de la poll
+    axios.get(
+        "http://localhost:3000/poll/1"
+      )
+      .then(response => {
+        console.log("response get poll: ", response.data.questions);
+
+        var questions = response.data.questions;
+
+        questions.forEach(q => {
+          var data_checkBoxes = [];
+          var data_type = "";
+          if(q.defined_answers == 0){
+            data_type = "text";
+          }
+          else{
+            data_type = "checkbox";
+            q.answers.forEach(a => {
+              data_checkBoxes.push(a.body);
+            });
+          }
+          
+          self.questions.push({
+            index: q.id,
+            question_label: q.body,
+            type: data_type,
+            checkBoxes: data_checkBoxes,
+            checkBox_selected: "",
+            answer:""
+          })
+        });
+        
+      })
+      .catch(error => {
+        this.launchNotify("Error", "Error al hacer get de la encuesta", "error");
+        console.log(error);
+      });
   }
 };
 
