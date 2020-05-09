@@ -1,0 +1,9 @@
+{
+    "db": {
+        "host": "db-pae.ccyj9hfbu3hm.eu-west-3.rds.amazonaws.com",
+        "user": "admin",
+        "password": "adminpae",
+        "port": "3306",
+        "database": "pae"
+    }
+}
