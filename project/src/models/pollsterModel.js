@@ -14,7 +14,7 @@ const pollster = function(pollster) {
 }
 
 pollster.create = (newpollster, result) => {
-    bd.query("INSERT INTO pollster SET ?", newpollster, (err, res) => {
+    bd.query("INSERT INTO Pollster SET ?", newpollster, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -26,7 +26,7 @@ pollster.create = (newpollster, result) => {
 };
 
 pollster.getAll = result => {
-    bd.query("SELECT * FROM pollster", (err, res) => {
+    bd.query("SELECT * FROM Pollster", (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -38,18 +38,22 @@ pollster.getAll = result => {
 };
 
 pollster.findById = (pollsterId, result) => {
-    bd.query('SELECT * FROM pollster WHERE id = ' + pollsterId, (err, res) => {
+    bd.query('SELECT * FROM Pollster WHERE id = ' + pollsterId, (err, res) => {
         if (err) {
             console.log("error: ", err);
-            result(err, null);
-            return;
+            result.err = err;
+            result.res = null;
+            return "f";
         }
         if (res.length) {
             console.log("found pollster: ", res[0]);
-            result(null, res[0]);
-            return;
+            result.err = null;
+            result.res = res[0];
+            return "t";
         }
-        result({kind: "not_found"}, null);
+        result.err = {kind: "not_found"};
+        result.res = null;
+        return "f";
     });
 };
 

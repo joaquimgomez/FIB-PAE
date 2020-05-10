@@ -15,7 +15,7 @@ poll.create = (newpoll, result) => {
             result(err, null);
             return;
         }
-        console.log("created Poll: ", {id: res.insertId, ...newpoll});
+        console.log("created poll: ", {id: res.insertId, ...newpoll});
         result(null, {id: res.insertId, ...newpoll});
     });
 };
@@ -36,17 +36,23 @@ poll.findById = (pollId, result) => {
     bd.query('SELECT * FROM Poll WHERE id = ' + pollId, (err, res) => {
         if (err) {
             console.log("error: ", err);
-            result(err, null);
-            return;
+            result.err = err;
+            result.res = null;
+            return "f";
         }
         if (res.length) {
-            //console.log("found poll: ", res[0]);
-            result(null, res[0]);
-            return;
+            console.log("found poll: ", res[0]);
+            result.err = null;
+            result.res = res[0];
+            return "t";
         }
-        result({kind: "not_found"}, null);
+        else {
+            result.err = {kind: "not_found"};
+            result.res = null;
+            return "f";
+        }
     });
-};
+}
 
 poll.updateById = (id, poll, result) => {
     bd.query(
