@@ -18,6 +18,7 @@ app.get("/", (req, res) => {
 });
 
 require("./routes/organizationRoutes")(app);
+require("./routes/pollRoutes")(app);
 require("./routes/realizedPollRoutes")(app);
 
 // set port, listen for requests

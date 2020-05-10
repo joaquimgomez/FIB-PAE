@@ -36,21 +36,15 @@ poll.findById = (pollId, result) => {
     bd.query('SELECT * FROM Poll WHERE id = ' + pollId, (err, res) => {
         if (err) {
             console.log("error: ", err);
-            result.err = err;
-            result.res = null;
-            return "f";
+            result(err,null);
+            return;
         }
         if (res.length) {
             console.log("found poll: ", res[0]);
-            result.err = null;
-            result.res = res[0];
-            return "t";
+            result(err,res[0])
+            return;
         }
-        else {
-            result.err = {kind: "not_found"};
-            result.res = null;
-            return "f";
-        }
+        result({kind: "not_found"}, null);
     });
 }
 

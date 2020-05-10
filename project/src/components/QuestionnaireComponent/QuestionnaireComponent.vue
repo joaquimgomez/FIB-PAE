@@ -73,6 +73,25 @@ export default {
       });
 
       console.log("Result: ", this.result);
+
+      var self = this;
+      axios.post("http://localhost:3000/realizedPoll",
+      {
+        id: "",
+        user_id: self.result.user_id,
+        enc_id: self.result.enc_id,
+        centr_id: self.result.centr_id,
+        enq_id: self.result.enq_id,
+        date: self.result.date,
+        respuestas: self.result.respuestas
+      })
+      .then(response => {
+        console.log("POST OK", response);
+      })
+      .catch(error => {
+        this.launchNotify("Error", "Error al hacer post de la enquesta", "error");
+        console.log(error);
+      });
     }
   },
   mounted(){
@@ -86,10 +105,11 @@ export default {
       .then(response => {
         var data = response.data;
         //Save data questionnaire
-        this.result.user_id = 0;
+        //TODO datos hardcoded
+        this.result.user_id = 1;
         this.result.enc_id = data.id;
-        this.result.centr_id = 0;
-        this.result.enq_id = 0;
+        this.result.centr_id = 1;
+        this.result.enq_id = 1;
 
         var data_questions = response.data.questions;
 
