@@ -9,7 +9,7 @@ const user = function(user) {
 }
 
 user.create = (newuser, result) => {
-    bd.query("INSERT INTO user SET ?", newuser, (err, res) => {
+    bd.query("INSERT INTO User SET ?", newuser, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -21,7 +21,7 @@ user.create = (newuser, result) => {
 };
 
 user.getAll = result => {
-    bd.query("SELECT * FROM user", (err, res) => {
+    bd.query("SELECT * FROM User", (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -33,24 +33,28 @@ user.getAll = result => {
 };
 
 user.findById = (userId, result) => {
-    bd.query('SELECT * FROM user WHERE id = ' + userId, (err, res) => {
+    bd.query('SELECT * FROM User WHERE id = ' + userId, (err, res) => {
         if (err) {
             console.log("error: ", err);
-            result(err, null);
-            return;
+            result.err = err;
+            result.res = null;
+            return "f";
         }
         if (res.length) {
             console.log("found user: ", res[0]);
-            result(null, res[0]);
-            return;
+            result.err = null;
+            result.res = res[0];
+            return "t";
         }
-        result({kind: "not_found"}, null);
+        result.err = {kind: "not_found"};
+        result.res = null;
+        return "f";
     });
 };
 
 user.updateById = (id, user, result) => {
     bd.query(
-      "UPDATE user SET name = ?, birth_date = ? WHERE id = ?",
+      "UPDATE User SET name = ?, birth_date = ? WHERE id = ?",
       [user.name, user.adress, user.phone, user.web, id], (err, res) => {
         if (err) {
           console.log("error: ", err);
@@ -70,7 +74,7 @@ user.updateById = (id, user, result) => {
 };
 
 user.remove = (id, result) => {
-    bd.query("DELETE FROM user WHERE id = ?", id, (err, res) => {
+    bd.query("DELETE FROM User WHERE id = ?", id, (err, res) => {
     if (err) {
         console.log("error: ", err);
         result(null, err);
@@ -82,13 +86,13 @@ user.remove = (id, result) => {
         return;
     }
 
-    console.log("deleted user with id: ", id);
+    console.log("deleted User with id: ", id);
     result(null, res);
     });
 };
 
 user.removeAll = result => {
-    bd.query("DELETE FROM user", (err, res) => {
+    bd.query("DELETE FROM User", (err, res) => {
     if (err) {
         console.log("error: ", err);
         result(null, err);
