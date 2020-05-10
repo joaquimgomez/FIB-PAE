@@ -20,6 +20,15 @@ export default {
       name__view: "Questionnaire",
       name__questionnaire: "",
 
+      labels:{
+        name: "Name",
+        age: "Age"
+      },
+      ruleForm: {
+        name: "",
+        age: ""
+      },
+
       questions:[],
 
       result:{
@@ -33,11 +42,17 @@ export default {
       },
 
       fit: 'contain',
+      // src_images: [ 
+      //   { img: require('../../assets/icons/happy.png') },
+      //   { img: require('../../assets/icons/neutral.png') },
+      //   { img: require('../../assets/icons/sad.png') }
+      // ]
       src_images: [ 
-        { img: require('../../assets/icons/happy.png') },
-        { img: require('../../assets/icons/neutral.png') },
-        { img: require('../../assets/icons/sad.png') }
-      ]
+        require('../../assets/icons/happy.png'),
+        require('../../assets/icons/neutral.png'),
+        require('../../assets/icons/sad.png')
+      ],
+      labels_images: ["Happy", "Neutral", "Sad"]
     }
     
   },
@@ -63,6 +78,8 @@ export default {
           answer_question: (q.type == "text")? q.answer:q.checkBox_selected
         })
       });
+
+      console.log("Result: ", this.result);
 
       var self = this;
       axios.post("http://localhost:3000/realizedPoll",
@@ -116,9 +133,20 @@ export default {
           else{
             data_type = "checkbox";
             q.answers.forEach(a => {
-              data_checkBoxes.push(a.body);
               //If answer have an image
-              if(a.image) data_type = "image";
+              if(a.image){
+                data_type = "image";
+                data_checkBoxes.push({
+                  body: a.body, 
+                  image: self.src_images[(a.id - 1)]
+                });
+              }
+              else{
+                data_checkBoxes.push({
+                  body: a.body, 
+                  image: ""
+                });
+              } 
             });
           }
           
@@ -126,7 +154,7 @@ export default {
             index: q.id,
             question_label: q.body,
             type: data_type,
-            checkBoxes: (data_type == "image")? self.src_images:data_checkBoxes,
+            checkBoxes: data_checkBoxes,
             checkBox_selected: "",
             answer:""
           })
@@ -148,6 +176,7 @@ export default {
       //   checkBox_selected: "",
       //   answer:""
       // });
+      console.log("Questions: ", this.questions);
   }
 };
 

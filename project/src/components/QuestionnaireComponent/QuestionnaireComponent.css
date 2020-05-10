@@ -71,3 +71,7 @@
 	border-radius: 50%;
 	background: white;
 }
+
+body{
+  overflow: auto !important;
+}

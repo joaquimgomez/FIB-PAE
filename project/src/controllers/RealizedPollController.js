@@ -14,7 +14,7 @@ function getEmployeeFromRec(req) {
         user_id: req.body.user_id,
         enc_id: req.body.enc_id,
         centr_id: req.body.centr_id,
-        enq_id: req.body.enc_id,
+        enq_id: req.body.enq_id,
         date: req.body.date,
         respuestas: JSON.stringify(req.body.respuestas)
     };
