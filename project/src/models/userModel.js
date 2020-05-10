@@ -33,7 +33,7 @@ user.getAll = result => {
 };
 
 user.findById = (userId, result) => {
-    bd.query('SELECT * FROM Center WHERE id = ' + userId, (err, res) => {
+    bd.query('SELECT * FROM User WHERE id = ' + userId, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err,null);

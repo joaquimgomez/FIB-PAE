@@ -38,7 +38,7 @@ pollster.getAll = result => {
 };
 
 pollster.findById = (pollsterId, result) => {
-    bd.query('SELECT * FROM Center WHERE id = ' + pollsterId, (err, res) => {
+    bd.query('SELECT * FROM Pollster WHERE id = ' + pollsterId, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err,null);

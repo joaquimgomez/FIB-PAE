@@ -16,14 +16,11 @@ realizedPoll.create = (newrealizedPoll, result) => {
     bd.query("INSERT INTO RealizedPoll SET ?", newrealizedPoll, (err, res) => {
         if (err) {
             console.log("error: ", err);
-            result.err = err;
-            result.res = null;
+            result(err, null);
+            return;
         }
-        else {
-            console.log("created realizedPoll: ", {id: res.insertId, ...newrealizedPoll});
-            result.err = null;
-            result.res = res[0];
-        }
+        console.log("created realizedPoll: ", {id: res.insertId, ...newrealizedPoll});
+        result(null, {id: res.insertId, ...newrealizedPoll});
     });
 };
 
@@ -42,7 +39,7 @@ realizedPoll.getAll = result => {
 };
 
 realizedPoll.findById = (realizedPollId, result) => {
-    bd.query('SELECT * FROM Center WHERE id = ' + realizedPollId, (err, res) => {
+    bd.query('SELECT * FROM RealizedPoll WHERE id = ' + realizedPollId, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err,null);

@@ -29,63 +29,88 @@ exports.post = function(req, res, next) {
         });
     }
     try {
+        var self = this;
+
         console.log("Entro al post");
-        let realizedPollObj = getEmployeeFromRec(req);
-        console.log("He obtenido el objeto realizedPoll");
+        var realizedPollObj = getEmployeeFromRec(req);
+        console.log("He obtenido el objeto realizedPoll", realizedPollObj);
 
         //comprobar que la poll existe y está vacia
-        let resultSet = {
-            err: "",
-            res: ""
-        };
-        let pollObj = poll.findById(realizedPollObj.enc_id, resultSet);
-        if (pollObj == "f") {
-            console.log(resultSet.err);
-            res.status(404).send(resultSet.err);
-            return;
-        }
+        poll.findById(realizedPollObj.enc_id, (err, pollData) => {
+            if (err) {
+                if (err.kind === "not_found") {
+                    res.status(404).send({
+                        message: 'Poll with id ' + realizedPollObj.enc_id + ' not found'
+                    });
+                } else  {
+                    res.status(500).send({
+                        message: err.message || 'Error retrieving poll with id ${realizedPollObj.enc_id}'
+                    });
+                }
+                return;
+            } 
+        });
         console.log("Poll verificada");
 
         //comprobar que el usuario existe
-        let userObj = user.findById(realizedPollObj.user_id,  resultSet);
-        if (userObj == "f") {
-            console.log(resultSet.err);
-            res.status(404).send(resultSet.err);
-            return;
-        }
+        user.findById(realizedPollObj.user_id,  (err, pollData) => {
+            if (err) {
+                if (err.kind === "not_found") {
+                    res.status(404).send({
+                        message: 'User with id ' + realizedPollObj.user_id + ' not found'
+                    });
+                } else  {
+                    res.status(500).send({
+                        message: err.message || 'Error retrieving user with id ${realizedPollObj.user_id}'
+                    });
+                }
+                return;
+            } 
+        });
         console.log("user verificada");
 
         //comprobar que el enquestador existe
-        let pollsterObj = pollster.findById(realizedPollObj.enq_id,  resultSet);
-        if (pollsterObj == 'f') {
-            console.log(resultSet.err);
-            res.status(404).send(resultSet.err);
-            return;
-        }
+        pollster.findById(realizedPollObj.enq_id,  (err, pollData) => {
+            if (err) {
+                if (err.kind === "not_found") {
+                    res.status(404).send({
+                        message: 'Pollster with id ' + realizedPollObj.enq_id + ' not found'
+                    });
+                } else  {
+                    res.status(500).send({
+                        message: err.message || 'Error retrieving pollster with id ${realizedPollObj.enq_id}'
+                    });
+                }
+            } 
+        });
         console.log("enquestador verificada");
+
         //comprobar que el centro existe
-        let centerObj = center.findById(realizedPollObj.centr_id,  resultSet);
-        console.log(centerObj);
-        if (centerObj == 'f') {
-            console.log(resultSet.err);
-            res.status(404).send(resultSet.err);
-            return;
-        }
+        center.findById(realizedPollObj.centr_id,  (err, pollData) => {
+            if (err) {
+                if (err.kind === "not_found") {
+                    res.status(404).send({
+                        message: 'Center with id ' + realizedPollObj.centr_id + ' not found'
+                    });
+                } else  {
+                    res.status(500).send({
+                        message: err.message || 'Error retrieving center with id ${realizedPollObj.centr_id}'
+                    });
+                }
+            } 
+        });
         console.log("center verificada");
         
         //guardar la realizedPoll en la BD
-        let realizedPollBool = realizedPoll.create(realizedPollObj, resultSet);
-        console.log(realizedPollBool);
-        if (realizedPollBool != 'f'){
-            console.log("He guardado la realized poll en la BD");
-            res.status(201).send("realizedPoll almacenada con éxito");
-            return;
-        }
-        else {
-            console.log(resultSet.err);
-            res.status(404).send(resultSet.err);
-            return;
-        }
+        realizedPoll.create(realizedPollObj, (err, result) => {
+            if (err) {
+                res.status(500).send({
+                    message: err.message || 'Error creating realizedPoll'
+                });
+            } 
+            else res.status(201).send("realizedPoll created successfully");
+        });
+        
     } catch (err) {
         console.log(err);
         next(err);
