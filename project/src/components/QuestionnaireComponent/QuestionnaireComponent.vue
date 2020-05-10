@@ -37,10 +37,15 @@ export default {
         centr_id: 0,
         enq_id: 0,
         date: "",
-        respuestas: {}
-      }
+        respuestas: []
+      },
 
-      
+      fit: 'contain',
+      src_images: [ 
+        { img: require('../../assets/icons/happy.png') },
+        { img: require('../../assets/icons/neutral.png') },
+        { img: require('../../assets/icons/sad.png') }
+      ]
     }
     
   },
@@ -58,8 +63,16 @@ export default {
       });
     },
     saveForm(){
-      var aux = this.questions[0];
-      console.log("Contenido de la pregunta: ", aux);
+      var date = new Date(Date.now()).toISOString().split('T')[0];
+      this.result.date = date;
+      
+      this.questions.forEach(q => {
+        this.result.respuestas.push({
+          answer_question: (q.type == "text")? q.answer:q.checkBox_selected
+        })
+      });
+
+      console.log("Result: ", this.result);
     }
   },
   mounted(){
@@ -71,9 +84,16 @@ export default {
         "http://localhost:3000/poll/1"
       )
       .then(response => {
-        var questions = response.data.questions;
+        var data = response.data;
+        //Save data questionnaire
+        this.result.user_id = 0;
+        this.result.enc_id = data.id;
+        this.result.centr_id = 0;
+        this.result.enq_id = 0;
 
-        questions.forEach(q => {
+        var data_questions = response.data.questions;
+
+        data_questions.forEach(q => {
           var data_checkBoxes = [];
           var data_type = "";
           if(q.defined_answers == 0){
@@ -83,6 +103,8 @@ export default {
             data_type = "checkbox";
             q.answers.forEach(a => {
               data_checkBoxes.push(a.body);
+              //If answer have an image
+              if(a.image) data_type = "image";
             });
           }
           
@@ -90,7 +112,7 @@ export default {
             index: q.id,
             question_label: q.body,
             type: data_type,
-            checkBoxes: data_checkBoxes,
+            checkBoxes: (data_type == "image")? self.src_images:data_checkBoxes,
             checkBox_selected: "",
             answer:""
           })
@@ -101,6 +123,17 @@ export default {
         this.launchNotify("Error", "Error al hacer get de la encuesta", "error");
         console.log(error);
       });
+
+
+      //TODO prueba pregunta con imagenes
+      // this.questions.push({
+      //   index: 4,
+      //   question_label: "Prueba pregunta con imagenes",
+      //   type: "image",
+      //   checkBoxes: self.src_images,
+      //   checkBox_selected: "",
+      //   answer:""
+      // });
   }
 };
 

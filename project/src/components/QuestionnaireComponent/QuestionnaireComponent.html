@@ -46,16 +46,15 @@
                                     </div>
 
                                     <!-- Checkbox answers -->
-                                    <div class="" v-else-if="question.type='checkbox'">
+                                    <div class="" v-else-if="question.type == 'checkbox' || question.type == 'image'">
                                         <label class="container-radio" v-for="(checkBox, index) in question.checkBoxes" style="color:rgb(105, 103, 103);font-size: initial;">
-                                            <input  type="radio" :key="index" v-model="question.checkBox_selected" 
-                                                :name="question.index" :value="checkBox"> {{ checkBox }}
-                                                <span class="checkmark"></span>
+                                            <input type="radio" :key="index" v-model="question.checkBox_selected" :name="question.index" :value="checkBox"> 
+                                            <div v-if="question.type == 'checkbox'">{{ checkBox }}</div>
+                                            <span class="checkmark"></span>
+                                            <!-- Image answers -->
+                                            <el-image v-if="question.type == 'image'" style="width: 40px; height: 40px" :src="checkBox.img" :fit="fit"></el-image>
                                         </label>
-                                    </div>
-
-                                    <!-- Image answers -->
-                                    
+                                    </div>                                    
 
                                 </el-form-item>
                             </el-col>
@@ -66,7 +65,7 @@
                     <el-row :gutter="24">
                         <!-- Save button -->
                         <el-col :offset="20" :xs="4" :sm="4" :md="4" :lg="4" style="text-align: right">
-                            <el-button type="info" plain size="small" icon="el-icon-check" @click="saveForm()">Save</el-button>
+                            <el-button type="success" plain size="small" icon="el-icon-check" @click="saveForm()">Save</el-button>
                         </el-col>
                     </el-row>
 
