@@ -38,22 +38,18 @@ pollster.getAll = result => {
 };
 
 pollster.findById = (pollsterId, result) => {
-    bd.query('SELECT * FROM Pollster WHERE id = ' + pollsterId, (err, res) => {
+    bd.query('SELECT * FROM Center WHERE id = ' + pollsterId, (err, res) => {
         if (err) {
             console.log("error: ", err);
-            result.err = err;
-            result.res = null;
-            return "f";
+            result(err,null);
+            return;
         }
         if (res.length) {
             console.log("found pollster: ", res[0]);
-            result.err = null;
-            result.res = res[0];
-            return "t";
+            result(err,res[0])
+            return;
         }
-        result.err = {kind: "not_found"};
-        result.res = null;
-        return "f";
+        result({kind: "not_found"}, null);
     });
 };
 

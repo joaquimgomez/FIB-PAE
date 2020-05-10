@@ -42,21 +42,18 @@ realizedPoll.getAll = result => {
 };
 
 realizedPoll.findById = (realizedPollId, result) => {
-    bd.query('SELECT * FROM RealizedPoll WHERE id = ' + realizedPollId.body, (err, res) => {
+    bd.query('SELECT * FROM Center WHERE id = ' + realizedPollId, (err, res) => {
         if (err) {
             console.log("error: ", err);
-            result(err, null);
-            return 'f';
+            result(err,null);
+            return;
         }
         if (res.length) {
             console.log("found realizedPoll: ", res[0]);
-            result(null, res[0]);
-            return 't';
+            result(err,res[0])
+            return;
         }
-        else {
-            result({kind: "not_found"}, null);
-            return 'f';
-        }
+        result({kind: "not_found"}, null);
     });
 };
 
