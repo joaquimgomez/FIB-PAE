@@ -18,15 +18,7 @@ export default {
   data() {
     return {
       name__view: "Questionnaire",
-
-      labels:{
-        name: "Name",
-        age: "Age"
-      },
-      ruleForm: {
-        name: "",
-        age: ""
-      },
+      name__questionnaire: "",
 
       questions:[],
 
@@ -72,8 +64,6 @@ export default {
         })
       });
 
-      console.log("Result: ", this.result);
-
       var self = this;
       axios.post("http://localhost:3000/realizedPoll",
       {
@@ -100,10 +90,14 @@ export default {
     //Call get poll
     //TODO ahora hardcoded el id de la poll
     axios.get(
-        "http://localhost:3000/poll/1"
+        "http://localhost:3000/poll/2"
       )
       .then(response => {
         var data = response.data;
+
+        //Save questionnaire name
+        self.name__questionnaire = data.name;
+
         //Save data questionnaire
         //TODO datos hardcoded
         this.result.user_id = 1;

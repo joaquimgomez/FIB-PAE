@@ -4,28 +4,11 @@
             <el-card style="background-color: #dab8f5;">
                 <el-row>
                     <el-col :xs="24">
-                        <h2 class="form_tittle">{{name__view}}</h2>
+                        <h2 class="form_tittle">{{name__questionnaire}}</h2>
                     </el-col>
                 </el-row>
                 <br>
                 <el-form ref="ruleForm" :model="ruleForm" label-width="75px">
-                    <!-- Name -->
-                    <el-row>
-                        <el-col :xs="24" :sm="23">
-                            <el-form-item :label="labels.name" prop="name">
-                                <el-input placeholder="Please input name or ID" v-model="ruleForm.name"></el-input>
-                            </el-form-item>
-                        </el-col> 
-                    </el-row>
-                
-                    <!-- Age -->
-                    <el-row>
-                        <el-col :xs="24" :sm="23">
-                            <el-form-item :label="labels.age" prop="age">
-                                <el-input placeholder="Please input age" v-model="ruleForm.age"></el-input>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
 
                     <br>
                     <el-col :xs="24" :sm="22">
