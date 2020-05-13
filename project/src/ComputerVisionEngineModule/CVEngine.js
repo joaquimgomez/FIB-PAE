@@ -77,7 +77,7 @@ class ComputerVisionEngineProblemSolver {
 class TextProblemSolver extends ComputerVisionEngineProblemSolver {
 	// --------------- CLASS FIELDS ---------------
 
-	imagePath = './';	// Field for the image path for the subclass TextProblemSolver
+	imagePath = './tmp/generated/';	// Field for the image path for the subclass TextProblemSolver
 
 
 	// --------------- CLASS FUNCTIONS ---------------
