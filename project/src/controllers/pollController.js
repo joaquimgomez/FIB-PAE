@@ -2,6 +2,15 @@ const poll = require("../models/pollModel");
 const question = require("../models/questionModel");
 const checkBox = require("../models/checkBoxModel");
 
+exports.findAll = (req, res) =>{
+    poll.getAll((err, data) => {
+        if (err)
+            res.status(500).send({
+                message: err.message || "Error ocurred while retrieving polls."
+            });
+        else res.send(data);
+    })
+};
 
 exports.findOne = (req, res) => {
     poll.findById(req.params.pollId, (err, pollData) => {
