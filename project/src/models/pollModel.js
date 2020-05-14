@@ -21,7 +21,7 @@ poll.create = (newpoll, result) => {
 };
 
 poll.getAll = result => {
-    bd.query("SELECT * FROM Poll", (err, res) => {
+    bd.query("select p.id,  p.name, p.created_at, p.org_id, o.name as org_name from Poll p, Organization o where p.org_id = o.id order by created_at asc;", (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
