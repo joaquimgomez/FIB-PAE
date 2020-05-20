@@ -1,7 +1,7 @@
 module.exports = app => {
     const poll = require("../controllers/pollController");
 
-    //app.post("/poll", poll.create);
+    app.post("/poll", poll.post);
     app.get("/poll", poll.findAll);
     app.get("/poll/:pollId", poll.findOne);
     //app.put("/poll/:pollId", poll.update);

@@ -16,8 +16,8 @@ question.create = (newquestion, result) => {
             result(err, null);
             return;
         }
-        console.log("created question: ", {id: res.insertId, ...newquestion});
-        result(null, {id: res.insertId, ...newquestion});
+        console.log("created question: ", res.insertId);
+        result(null, res.insertId);
     });
 };
 

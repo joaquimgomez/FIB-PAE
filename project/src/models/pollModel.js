@@ -15,8 +15,8 @@ poll.create = (newpoll, result) => {
             result(err, null);
             return;
         }
-        console.log("created poll: ", {id: res.insertId, ...newpoll});
-        result(null, {id: res.insertId, ...newpoll});
+        console.log("created poll: ", res.insertId);
+        result(null, res.insertId);
     });
 };
 
