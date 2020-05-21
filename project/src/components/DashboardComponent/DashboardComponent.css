@@ -1,0 +1,12 @@
+a {
+    color:rgb(95, 93, 93);
+}
+
+.el-card__body{
+    padding:0px;
+    padding-top: 20px;
+}
+
+span{
+    font-size: small;
+}
