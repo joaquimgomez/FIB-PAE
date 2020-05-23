@@ -11,3 +11,11 @@ h6{
     padding-top: 12px;
 }
 
+button.el-button{
+    box-shadow: 3px 3px 5px rgb(181, 157, 187);
+    width: -webkit-fill-available;
+}
+
+img.image{
+    height: -webkit-fill-available;    
+}
