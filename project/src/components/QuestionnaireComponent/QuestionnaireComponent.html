@@ -1,59 +1,49 @@
-<div class="container-fluid">
-    <el-row>
-        <el-col :xs="24">
-            <el-card style="background-color: #dab8f5;">
-                <el-row>
-                    <el-col :xs="24">
-                        <h2 class="form_tittle">{{name__questionnaire}}</h2>
-                    </el-col>
-                </el-row>
-                <br>
-                <el-form ref="ruleForm" :model="ruleForm" label-width="75px">
+<div class="container-questionnaire">
+    <el-card style="background-color: #dab8f5;">
+        <el-row>
+            <el-col :xs="24">
+                <h4 class="form_tittle">{{name__questionnaire}}</h4>
+            </el-col>
+        </el-row>
+        <br>
+        <el-form ref="ruleForm" :model="ruleForm">
 
-                    <br>
-                    <el-col :xs="24" :sm="22">
-                        <span style="margin-left: 75px;color:rgb(105, 103, 103);;">Thank you for taking the time to fill in this questionnaire. Your opinions are really important to us.</span>
-                    </el-col>
-                    <br>
+            <br>
+            <el-col :xs="24" :sm="22" style="margin-bottom: 20px;">
+                <label>Thank you for taking the time to fill in this questionnaire. Your opinions are really important to us.</label>
+            </el-col>
+            <br>
 
-                    <div v-for="(question, index) in questions">
-                        <!-- Question -->
-                        <el-row>
-                            <el-col :xs="24" :sm="23">
-                                <el-form-item class="" prop="question" style="margin-top:20px;">
-                                    <label style="color:rgb(105, 103, 103);font-size: initial;">{{ question.question_label }}</label>
+            <div v-for="(question, index) in questions">
+                <!-- Question -->
+                <el-form-item class="" prop="question" style="margin-top:20px;">
+                    <label>{{ question.question_label }}</label>
 
-                                    <!-- Text answers -->
-                                    <div v-if="question.type == 'text'">
-                                        <el-input v-model="question.answer" type="textarea" :autosize="{ minRows: 2, maxRows: 6 }"></el-input>
-                                    </div>
+                    <!-- Text answers -->
+                    <div v-if="question.type == 'text'">
+                        <el-input v-model="question.answer" type="textarea" :autosize="{ minRows: 2, maxRows: 6 }"></el-input>
+                    </div>
 
-                                    <!-- Checkbox answers -->
-                                    <div class="" v-else-if="question.type == 'checkbox' || question.type == 'image'">
-                                        <label class="container-radio" v-for="(checkBox, index) in question.checkBoxes" style="color:rgb(105, 103, 103);font-size: initial;">
-                                            <input type="radio" :key="index" v-model="question.checkBox_selected" :name="question.index" :value="checkBox.body"> 
-                                            <div v-if="question.type == 'checkbox'">{{ checkBox.body }}</div>
-                                            <span class="checkmark"></span>
-                                            <!-- Image answers -->
-                                            <el-image v-if="question.type == 'image'" style="width: 40px; height: 40px" :src="checkBox.image" :fit="fit"></el-image>
-                                        </label>
-                                    </div>                                    
+                    <!-- Checkbox answers -->
+                    <div class="" v-else-if="question.type == 'checkbox' || question.type == 'image'">
+                        <label class="container-radio" v-for="(checkBox, index) in question.checkBoxes">
+                            <input type="radio" :key="index" v-model="question.checkBox_selected" :name="question.index" :value="checkBox.body"> 
+                            <label class="label-checkbox" v-if="question.type == 'checkbox'">{{ checkBox.body }}</label>
+                            <span class="checkmark"></span>
+                            <!-- Image answers -->
+                            <el-image v-if="question.type == 'image'" style="width: 30px; height: 30px" :src="checkBox.image" :fit="fit"></el-image>
+                        </label>
+                    </div>                                    
 
-                                </el-form-item>
-                            </el-col>
-                        </el-row>
-                    </div>                        
-                
-                
-                    <el-row :gutter="24">
-                        <!-- Save button -->
-                        <el-col :offset="20" :xs="4" :sm="4" :md="4" :lg="4" style="text-align: right">
-                            <el-button type="success" plain size="small" icon="el-icon-check" @click="saveForm()">Save</el-button>
-                        </el-col>
-                    </el-row>
+                </el-form-item>
+            </div>                        
+        
+            <!-- Save button -->
+            <div style="text-align: right"> 
+                <el-button type="success" plain size="small" icon="el-icon-check" style="text-align: right;" @click="saveForm()">Save</el-button>
+            </div>
+            
 
-                </el-form>
-            </el-card>
-        </el-col>
-    </el-row>
+        </el-form>
+    </el-card>
 </div>
