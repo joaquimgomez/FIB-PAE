@@ -50,10 +50,19 @@
     </el-row>
 
 
-    <el-dialog title="Shipping address" :visible.sync="showDialog">
-        <el-search-table-pagination v-loading="loading" type="local" :data="tableData" :page-sizes="[10, 15, 20]" :columns="columns" @sort-change="onSortChange">
-
-        </el-search-table-pagination>
+    <el-dialog title="Questionnaires available" width="fit-content" :visible.sync="showDialog">
+        <el-row>
+            <el-col :xs="24" style="text-align: center;">
+                <el-table v-loading="loading" type="local" :data="tableData" @sort-change="onSortChange">
+                      <el-table-column prop="name" label="Name" width="100" sortable="true"></el-table-column>
+                      <el-table-column prop="organization" label="Organization" width="130" sortable="true"></el-table-column>
+                      <!-- <el-table-column prop="date" label="Date" width="90" sortable="true"></el-table-column> -->
+                      <el-table-column prop="action" label="Answer" width="70">
+                        <el-button class="action-button" plain size="small" icon="el-icon-edit" @click=""></el-button>
+                      </el-table-column>
+                </el-table>
+            </el-col>
+          </el-row>
     </el-dialog>
 </div>
 

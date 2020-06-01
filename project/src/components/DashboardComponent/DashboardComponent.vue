@@ -10,10 +10,15 @@ import Vuex from 'vuex'
 import QuestionnaireComponent from '@/components/QuestionnaireComponent/QuestionnaireComponent'
 import { mapState } from 'vuex';
 import "element-ui/lib/theme-chalk/index.css";
+import ElTablePagination from 'el-table-pagination'
+import ElementUI from 'element-ui'
+import locale from 'element-ui/lib/locale/lang/en'
 
 
 Vue.use(VueAxios, axios)
 Vue.use(Vuex)
+Vue.use(ElTablePagination, {locale})
+Vue.use(ElementUI, { locale })
 
 /**
  * Export component Main, the father component in the aplication
@@ -26,14 +31,14 @@ export default {
         tableData: [],
         columns: [
         { 
-          label: "Name questionnaire", 
-          width: 60, 
+          label: "Questionnaire", 
+          width: 150, 
           sortable: true,
           prop: "name" 
         },
         { 
           label: "Organization", 
-          width: 80, 
+          width: 130, 
           sortable: true,
           prop: "organization" 
         },
@@ -52,6 +57,13 @@ export default {
     ])
   },
   methods:{
+    launchNotify(title, message, type) {
+      this.$notify({
+        title: title,
+        message: message,
+        type: type
+      });
+    },
     onSortChange(order) {
       this.tableData = this.tableData.sort(function(a, b) {
         if (order.order == "descending") return b[order.prop] - a[order.prop];
@@ -65,15 +77,15 @@ export default {
         "http://localhost:3000/poll"
       )
       .then(response => {
-        var data = response.data;
+        var data = response;
         console.log("response data: ", data);
-
+        
         data.forEach(q => {
           self.tableData.push({
             id: q.id,
             name: q.name,
             organization: q.org_name,
-            date: q.created_at
+            date: new Date(q.created_at).toISOString().split('T')[0]
           })
         });
       })

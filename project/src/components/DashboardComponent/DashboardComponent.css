@@ -19,3 +19,10 @@ button.el-button{
 img.image{
     height: -webkit-fill-available;    
 }
+
+.action-button{
+    background-color: rgb(181, 157, 187);
+    box-shadow:none!important;
+    width: 75%!important;
+    text-align: center!important;
+}
