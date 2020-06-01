@@ -24,7 +24,7 @@ export default new Router({
     // },
     {
       path: "/app",
-      name: "dasboard",
+      name: "dashboard",
       component: () => import("./components/DashboardComponent/DashboardComponent")
     },
     // {
