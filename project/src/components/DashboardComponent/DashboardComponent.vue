@@ -20,13 +20,19 @@ export default {
   name: 'DashboardComponent',
   data () {
       return {
+        showDialog: false,
+        tableData: []
       }
   },
   computed: {
     ...mapState([
     ])
   },
-  async mounted(){
+  methods:{
+
+  },
+  mounted(){
+
   },
 
   components:{    

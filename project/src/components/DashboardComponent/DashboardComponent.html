@@ -17,8 +17,9 @@
     </el-row>
     <el-row style="padding-top: 5%;">
         <el-col :offset="2" :xs="20" :sm="20">
-            <el-button style="background-color:plum;text-align: left; height: 75px; " shadow="always">
-                <a href="/app/questionnaire">
+            <el-button style="background-color:plum;text-align: left; height: 75px; " shadow="always" @click="showDialog = true">
+                <!-- /app/questionnaire -->
+                <a href=""> 
                     <el-row>
                         <el-col :xs="8" :sm="8">
                             <img src="../../assets/questionnaire.png" class="image" style="margin-left: 10px;">
@@ -48,3 +49,11 @@
         </el-col>        
       </el-row>
 </div>
+
+<el-dialog title="Shipping address" :visible.sync="showDialog">
+    <el-table :data="tableData">
+        <!-- <el-table-column property="date" label="Date" width="150"></el-table-column>
+        <el-table-column property="name" label="Name" width="200"></el-table-column>
+        <el-table-column property="address" label="Address"></el-table-column> -->
+    </el-table>
+</el-dialog>
