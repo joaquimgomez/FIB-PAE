@@ -17,18 +17,15 @@
     </el-row>
     <el-row style="padding-top: 5%;">
         <el-col :offset="2" :xs="20" :sm="20">
-            <el-button style="background-color:plum;text-align: left; height: 75px; " shadow="always" @click="showDialog = true">
-                <!-- /app/questionnaire -->
-                <a href="">
-                    <el-row>
-                        <el-col :xs="8" :sm="8">
-                            <img src="../../assets/questionnaire.png" class="image" style="margin-left: 10px;">
-                        </el-col>
-                        <el-col :xs="4" :sm="4">
-                            <h6 style="vertical-align: center;">Questionnaire</h6>
-                        </el-col>
-                    </el-row>
-                </a>
+            <el-button style="background-color:plum;text-align: left; height: 75px; " shadow="always" @click="showDialog=true">
+                <el-row>
+                    <el-col :xs="8" :sm="8">
+                        <img src="../../assets/questionnaire.png" class="image" style="margin-left: 10px;">
+                    </el-col>
+                    <el-col :xs="4" :sm="4">
+                        <h6 style="vertical-align: center;">Questionnaire</h6>
+                    </el-col>
+                </el-row>
             </el-button>
         </el-col>
     </el-row>
@@ -59,7 +56,7 @@
                       <!-- <el-table-column prop="date" label="Date" width="90" sortable="true"></el-table-column> -->
                       <el-table-column prop="action" label="Answer" width="70">
                         <template slot-scope="scope">
-                            <el-button class="action-button" plain size="small" icon="el-icon-edit" @click="setQuestionnaire(scope.$index, scope.row)"></el-button>
+                            <el-button class="action-button" size="small" plain icon="el-icon-edit" @click="setQuestionnaire(scope.$index, scope.row)"></el-button>
                         </template>
                       </el-table-column>
                 </el-table>

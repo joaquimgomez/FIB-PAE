@@ -23,6 +23,7 @@ img.image{
 .action-button{
     background-color: rgb(181, 157, 187);
     box-shadow:none!important;
-    width: 75%!important;
+    width: 70%!important;
     text-align: center!important;
+    padding-left: inherit;
 }

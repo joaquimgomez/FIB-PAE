@@ -27,7 +27,7 @@ export default {
   name: 'DashboardComponent',
   data () {
       return {
-        showDialog: true,
+        showDialog: false,
         tableData: [],
         columns: [
         { 
