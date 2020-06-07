@@ -53,7 +53,7 @@ export default {
       }
   },
   computed: {
-    ...mapState([
+    ...mapState([ "id_questionnaire"
     ])
   },
   methods:{
@@ -69,6 +69,10 @@ export default {
         if (order.order == "descending") return b[order.prop] - a[order.prop];
         else return a[order.prop] - b[order.prop];
       });
+    },
+    setQuestionnaire(index,row){
+      this.$store.commit("setIdQuestionnaire", row.id);
+      this.$router.push('/app/questionnaire');
     }
   },
   mounted(){

@@ -8,7 +8,7 @@ export default {
      * @param {boolean} status  status for property
      * 
      */
-    loadApp(state, data)
+    setIdQuestionnaire(state, data)
     {
         state.id_questionnaire = data;        
     },

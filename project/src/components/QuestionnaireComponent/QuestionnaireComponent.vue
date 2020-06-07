@@ -58,7 +58,7 @@ export default {
   },
   components: {},
   computed: {
-    ...mapState([
+    ...mapState([ "id_questionnaire"
     ])
   },
   methods: {
@@ -103,15 +103,20 @@ export default {
   },
   mounted(){
     var self = this;
+    
+    console.log("id_ques", this.id_questionnaire);
+
+    var url = "http://localhost:3000/poll/" + this.id_questionnaire;
+    console.log("URL: ", url);
 
     //Call get poll
-    //TODO ahora hardcoded el id de la poll
     axios.get(
-        "http://localhost:3000/poll/2"
+        url
       )
       .then(response => {
-        var data = response.data;
+        var data = response;
 
+        console.log("Data: ", response);
         //Save questionnaire name
         self.name__questionnaire = data.name;
 
@@ -122,7 +127,7 @@ export default {
         this.result.centr_id = 1;
         this.result.enq_id = 1;
 
-        var data_questions = response.data.questions;
+        var data_questions = data.questions;
 
         data_questions.forEach(q => {
           var data_checkBoxes = [];
@@ -165,18 +170,6 @@ export default {
         this.launchNotify("Error", "Error al hacer get de la encuesta", "error");
         console.log(error);
       });
-
-
-      //TODO prueba pregunta con imagenes
-      // this.questions.push({
-      //   index: 4,
-      //   question_label: "Prueba pregunta con imagenes",
-      //   type: "image",
-      //   checkBoxes: self.src_images,
-      //   checkBox_selected: "",
-      //   answer:""
-      // });
-      console.log("Questions: ", this.questions);
   }
 };
 

@@ -90,3 +90,7 @@ label{
 .label-checkbox{
   padding-top: 10px;
 }
+
+.el-card__body{
+  padding: 20px!important;
+}
