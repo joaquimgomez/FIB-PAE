@@ -50,8 +50,9 @@ poll.findById = (pollId, result) => {
 
 poll.updateById = (id, poll, result) => {
     bd.query(
-      "UPDATE Poll SET name = ?, org_id = ? WHERE id = ?",
-      [poll.name, poll.adress, poll.phone, poll.web, id], (err, res) => {
+      "UPDATE Poll SET name = ?, org_id = ?, last_modify = ? WHERE id = ?",
+      //[poll.name, poll.adress, poll.phone, poll.web, id], (err, res) => {
+      [poll.name, poll.org_id, poll.last_modify, id], (err, res) => {
         if (err) {
           console.log("error: ", err);
           result(null, err);

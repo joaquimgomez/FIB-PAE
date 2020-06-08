@@ -79,7 +79,19 @@ function getPollObj(req) {
         id: req.body.id,
         name: req.body.name,
         org_id: req.body.org_id,
-        created_at: new Date()
+        created_at: new Date(),
+        last_modify: null
+    };
+
+    return pollObj;
+}
+
+function getPollObjPut(req, poll_id) {
+    const pollObj = {
+        id: poll_id,
+        name: req.body.name,
+        org_id: req.body.org_id,
+        last_modify: new Date()
     };
 
     return pollObj;
@@ -117,7 +129,6 @@ exports.post = function(req, res, next) {
     try {
         var self = this;
 
-        console.log("***********Entro al post");
         var pollObj = getPollObj(req);
         //console.log("He obtenido el objeto poll", pollObj);
 
@@ -126,7 +137,7 @@ exports.post = function(req, res, next) {
             if (err) {
                 if (err.kind === "not_found") {
                     res.status(404).send({
-                        message: 'Poll with id ' + pollObj.org_id + ' not found'
+                        message: 'Organization with id ' + pollObj.org_id + ' not found'
                     });
                 } else  {
                     res.status(500).send({
@@ -136,7 +147,6 @@ exports.post = function(req, res, next) {
                 return;
             } 
         });
-        console.log("**********Organitzacio verificada");
         
         //guardar la poll en la BD
         poll.create(pollObj, (err, pollData) => {
@@ -145,7 +155,6 @@ exports.post = function(req, res, next) {
                     message: err.message || 'Error poll'
                 });
             } 
-            console.log("***********poll creada");
 
             //guardar todas las preguntas y relacionarlas con la nueva poll
             
@@ -158,7 +167,6 @@ exports.post = function(req, res, next) {
                             message: err.message || 'Error question'
                         });
                     }
-                    console.log("***********question creada");
                     if (q.defined_answers == 1) {
                         //guarda todas las checkBox por cada pregunta
                         console.log(q);
@@ -172,7 +180,6 @@ exports.post = function(req, res, next) {
                                         message: err.message || 'Error CheckBox'
                                     });
                                 }
-                                console.log("***********checkBox creada");
                             });
                         }
                     }
@@ -187,5 +194,66 @@ exports.post = function(req, res, next) {
         next(err);
         res.status(503).send(err);
         return;
+    }
+}
+
+exports.update = function(req, res, next) {
+    if (!req.body){
+        res.status(400).send({
+            message: "Content can not be empty!"
+        });
+    }
+    try {
+        var pollObj = getPollObjPut(req, req.params.pollId);
+        //comprovem que existeix la Poll
+        poll.findById(pollObj.id, (err, pollData) => {
+            if (err) {
+                if (err.kind === "not_found") {
+                    res.status(404).send({
+                        message: 'Poll with id ' + pollObj.id + ' not found'
+                    });
+                } else  {
+                    res.status(500).send({
+                        message: err.message || 'Error retrieving poll with id ${pollObj.org_id}'
+                    });
+                }
+            } 
+            else {
+                //Comprovem que exixteix la organització
+                org.findById(pollObj.org_id, (err, orgData) => {
+                    if (err) {
+                        if (err.kind === "not_found") {
+                            res.status(404).send({
+                                message: 'Organization with id ' + pollObj.org_id + ' not found'
+                            });
+                        } else  {
+                            res.status(500).send({
+                                message: err.message || 'Error retrieving poll with id ${pollObj.org_id}'
+                            });
+                        }
+                        return false;
+                    } 
+                    else {
+                        //Fem update de la Poll
+                        poll.updateById(pollObj.id, pollObj, (err, pollData2) => {
+                            if (err) {
+                                res.status(500).send({
+                                    message: err.message || 'Error poll'
+                                });
+                            }
+                            res.status(201).send("poll modificada con exito");
+                        });
+                    }
+                });
+            }
+        });
+    
+        
+    
+    } catch (err) {
+        console.log(err);
+        next(err);
+        res.status(503).send(err);
+        return false;
     }
 }

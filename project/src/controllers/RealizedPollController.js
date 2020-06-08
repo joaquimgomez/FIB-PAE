@@ -31,9 +31,7 @@ exports.post = function(req, res, next) {
     try {
         var self = this;
 
-        console.log("Entro al post");
         var realizedPollObj = getEmployeeFromRec(req);
-        console.log("He obtenido el objeto realizedPoll", realizedPollObj);
 
         //comprobar que la poll existe y está vacia
         poll.findById(realizedPollObj.enc_id, (err, pollData) => {
