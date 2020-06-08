@@ -28,6 +28,7 @@ app.get("/", (req, res) => {
 require("./src/routes/organizationRoutes")(app);
 require("./src/routes/pollRoutes")(app);
 require("./src/routes/realizedPollRoutes")(app);
+require("./src/routes/questionRoutes")(app);
 
 // set port, listen for requests
 app.listen(3000, () => {

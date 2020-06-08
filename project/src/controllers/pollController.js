@@ -234,7 +234,7 @@ exports.update = function(req, res, next) {
                         return false;
                     } 
                     else {
-                        //Fem update de la Poll
+                        //Fem update de la poll
                         poll.updateById(pollObj.id, pollObj, (err, pollData2) => {
                             if (err) {
                                 res.status(500).send({

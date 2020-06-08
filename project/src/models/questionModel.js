@@ -86,21 +86,22 @@ question.updateById = (id, question, result) => {
       });
 };
 
-question.remove = (id, result) => {
-    bd.query("DELETE FROM Question WHERE id = ?", id, (err, res) => {
+question.remove = (pollId, questionId, result) => {
+    bd.query("DELETE FROM Question WHERE id = ? AND enc_id = ?", [questionId, pollId], (err, res) => {
     if (err) {
         console.log("error: ", err);
         result(null, err);
         return;
     }
-    if (res.affectedRows == 0) {
+    else if (res.affectedRows == 0) {
         // not found question with the id
-        result({ kind: "not_found" }, null);
+        result({kind: "not found" }, null);
         return;
     }
-
-    console.log("deleted question with id: ", id);
-    result(null, res);
+    else {
+        console.log("deleted question with id: ", pollId);
+        result(null, res);
+    }
     });
 };
 
