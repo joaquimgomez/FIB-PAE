@@ -2,18 +2,24 @@
     <el-card style="background-color: #dab8f5;">
         <el-form >
             <el-form-item prop="title">
-                <el-input placeholder="Questionnaire name"></el-input>
+                <el-input v-model="name" placeholder="Questionnaire name"></el-input>
             </el-form-item>
             <el-row>
                 <el-col :span="12">
                     <label>Number of questions</label>
                 </el-col>
                 <el-col :span="12">
-                    <el-input type="email"></el-input>
+                    <el-input-number v-model="num" :min="1"></el-input-number>
                 </el-col>
             </el-row>
 
-            
+            <br>
+            <div v-for="n in num">
+                <questionform :number=n></questionform>
+                <br>
+            </div>
+
+            <br>
             <el-row>
                 <div class="wrapper">
                     <el-button type="primary">Create</el-button>
