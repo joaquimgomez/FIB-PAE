@@ -128,10 +128,7 @@ exports.post = function(req, res, next) {
     }
     try {
         var self = this;
-
         var pollObj = getPollObj(req);
-        //console.log("He obtenido el objeto poll", pollObj);
-
         //comprobar que la poll existe y está vacia
         org.findById(pollObj.org_id, (err, orgData) => {
             if (err) {
@@ -155,9 +152,7 @@ exports.post = function(req, res, next) {
                     message: err.message || 'Error poll'
                 });
             } 
-
             //guardar todas las preguntas y relacionarlas con la nueva poll
-            
             for(i = 0; i < req.body.questions.length; i++) {
                 let q = req.body.questions[i];
                 let questionObj = getQuestionObj(q, pollData);
@@ -169,9 +164,7 @@ exports.post = function(req, res, next) {
                     }
                     if (q.defined_answers == 1) {
                         //guarda todas las checkBox por cada pregunta
-                        console.log(q);
                         for(var j = 0; j < q.answers.length; j++) {
-                        //for (var c in req.body.questions.answers) {
                             var c = q.answers[j];
                             var checkBoxObj = getCheckBoxObj(c, q.id, pollData);
                             checkBox.create(checkBoxObj, (err, checkBoxData) => {
