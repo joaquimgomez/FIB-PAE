@@ -497,7 +497,7 @@ class ComputerVisionEngine {
 			let solver;
 			if(this.responsesTypes[i] == 'text') {
 				solver = new TextProblemSolver(subproblems[i]);
-			} else if (this.responsesTypes[i] == 'icons-checkbox') {
+			} else if (this.responsesTypes[i] == 'image') {
 				solver = new IconsProblemSolver(subproblems[i]);
 			} else {
 				solver = new CheckboxesProblemSolver(subproblems[i]);

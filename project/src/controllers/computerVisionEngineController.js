@@ -1,30 +1,34 @@
 const fs = require('fs');
-const cv = require('opencv4nodejs');
-const CVE = require('../ComputerVisionEngineModule/CVEngine.js');
+//const cv = require('opencv4nodejs');
+//const CVE = require('../ComputerVisionEngineModule/CVEngine.js');
 
-exports.post = function(req, res) {
-    if(req.file) {
+
+exports.post = function(req, res, next) {
+    if(req.body.file) {
         try {
-            cv.imreadAsync('./ComputerVisionEngineModule/tmp/uploads/' + req.file.filename, (err, mat) => {
-                let responsesTypes = ['text', 'text', 'text', 'icons-checkbox',
-                                    'text', 'icons-checkbox', 'normal-checkbox',
-                                    'normal-checkbox', 'text'];    // RECIBIR INFORMACIÓN
+            // Engine creation and image resolution
+            console.log("Image: ", req.body.file);
+            console.log("Types: ", req.body.expected_data)
+            //let cve = new CVE(req.file, req.expected_data);
+            // let results = cve.run();
 
-                // Engine creation and image resolution
-                let cve = new CVE(mat, responsesTypes);
-                let results = cve.run();
+            // // Waiting for the promises
+            // Promise.all(results).then(values => {
+            //     //res.json(req.file);
+            //     console.log(values);
 
-                // Waiting for the promises
-                Promise.all(results).then(values => {
-                    //res.json(req.file);
-                    //console.log(values);
+            //     // Sending results
 
-                    // Sending results
+            //     // Deleting received image
+            //     //fs.unlinkSync('../ComputerVisionEngineModule/tmp/uploads/' + req.file.filename);
+            // })
 
-                    // Deleting received image
-                    fs.unlinkSync('../ComputerVisionEngineModule/tmp/uploads/' + req.file.filename);
-                })
+
+            //TODO
+            res.status(200).send({
+                message: req.body.file
             });
+
         } catch (error) {
             console.log(err);
             next(err);

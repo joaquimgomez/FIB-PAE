@@ -3,8 +3,11 @@
         <el-col :xs="24">
             <el-card style="background-color: #dab8f5;">
                 <el-row>
-                    <el-col :xs="24">
+                    <el-col :xs="12">
                         <h2 class="form_tittle">{{name__questionnaire}}</h2>
+                    </el-col>
+                    <el-col :xs="12">
+                        <el-button type="info" plain @click="showCamera()">Take a picture</el-button>
                     </el-col>
                 </el-row>
                 <br>
@@ -56,4 +59,19 @@
             </el-card>
         </el-col>
     </el-row>
+
+    <el-dialog :visible.sync="showDialogCamera" width="80%">
+        <span>Take a photo of questionnaire</span>
+        <vue-web-cam
+            ref="webcam"
+            :device-id="deviceId"
+            width="100%"
+            @started="onStarted"
+            @stopped="onStopped"
+            @error="onError"
+            @cameras="onCameras"
+            @camera-change="onCameraChange"
+        />
+        <button type="button" class="btn btn-primary" @click="onCapture">Capture Photo</button>
+    </el-dialog>
 </div>
