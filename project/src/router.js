@@ -24,9 +24,14 @@ export default new Router({
     // },
     {
       path: "/app",
-      name: "main",
-      component: () => import("./components/MainComponent/MainComponent")
+      name: "dashboard",
+      component: () => import("./components/DashboardComponent/DashboardComponent")
     },
+    // {
+    //   path: "/app",
+    //   name: "main",
+    //   component: () => import("./components/MainComponent/MainComponent")
+    // },
     {
       path: "/app/questionnaire",
       name: "questionnaire",
