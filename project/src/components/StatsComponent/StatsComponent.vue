@@ -74,9 +74,24 @@ export default {
     },
     loadTable(){
 
+    },
+    search(){
+      
     }
   },
   mounted(){
+
+    axios.get(
+        "http://localhost:3000/organization"
+      )
+      .then(response => {
+        console.log("response: ", response);
+        
+      })
+      .catch(error => {
+        this.launchNotify("Error", "Error al hacer get de las organizaciones", "error");
+        console.log(error);
+      });
   },
 
   components:{ }
