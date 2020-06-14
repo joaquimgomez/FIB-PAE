@@ -30,7 +30,7 @@ require("./src/routes/pollRoutes")(app);
 require("./src/routes/realizedPollRoutes")(app);
 require("./src/routes/questionRoutes")(app);
 require("./src/routes/checkBoxRoutes")(app);
-require("./src/routes/centerRoutes")(app);
+require("./src/routes/organizationRoutes")(app);
 
 // set port, listen for requests
 app.listen(3000, () => {
