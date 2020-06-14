@@ -56,23 +56,23 @@ export default {
         //END table
 
         //pie chart
+        questions: [],
+        ruleFormStats: {
+          question: ""
+        },
         comboStats: {
           questions: [],
         },
 
-        series: [44, 55, 13, 43, 22],
+        series: [100],
         chartOptions: {
           chart: {
-            //width: 380,
             type: 'pie',
           },
-          labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
+          labels: ['loading'],
           responsive: [{
             breakpoint: 480,
             options: {
-              chart: {
-                //width: 200
-              },
               legend: {
                 position: 'bottom'
               }
@@ -106,6 +106,63 @@ export default {
     },
     search(){
 
+    },
+    pollChange(){
+      this.loadQuestions();
+    },
+    loadQuestions(){
+      var self = this;
+      //Fill questions combo
+      axios.get(
+        "http://localhost:3000/poll/" + self.ruleForm.poll.id
+      )
+      .then(response => {
+        this.questions = response.data.questions;
+
+        this.comboStats.questions = [];        
+        response.data.questions.forEach(q => {
+          if(q.defined_answers == 1) this.comboStats.questions.push(q.body);
+        });      
+      })
+      .catch(error => {
+        this.launchNotify("Error", "Error al hacer get de las preguntas de la poll", "error");
+        console.log(error);
+      });
+    },
+    loadQuestionChart(){
+      //this.series
+      this.series = [];
+      this.chartOptions.labels = [];
+      var labels = [];
+
+      this.questions.forEach(q => {
+        if(q.body == this.ruleFormStats.question) {
+          console.log("Entra en el if: ", q);
+          q.answers.forEach(a => {
+            console.log("Answer: ", a.body);
+            
+            
+            labels.push(a.body);
+            //TODO cambiar por los valores cuando este el get hecho
+            this.series.push(a.id);
+          });
+        }
+      });
+
+      this.chartOptions = {
+        chart: {
+          type: 'pie',
+        },
+        labels: labels,
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }]
+      }
     }
   },
   mounted(){
@@ -115,9 +172,11 @@ export default {
     )
     .then(response => {
       response.data.forEach(p => {
-        this.combo.polls.push(p.name);
+        this.combo.polls.push({id: p.id, name: p.name});
       });
-      this.ruleForm.poll = this.combo.polls[0];      
+      this.ruleForm.poll = {id: this.combo.polls[0].id, name: this.combo.polls[0].name };
+      
+      this.loadQuestions(); 
     })
     .catch(error => {
       this.launchNotify("Error", "Error al hacer get de las polls", "error");
@@ -138,10 +197,7 @@ export default {
       console.log(error);
     });
 
-  },
-
-  
-
+  } 
 }
 </script>
 

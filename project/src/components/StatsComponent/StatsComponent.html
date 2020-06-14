@@ -7,8 +7,8 @@
                     <el-col :xs="24" :sm="24" :md="24" :lg="24">
                         <el-form :label="labels.poll" prop="poll">
                             <label for="label.poll">Questionnaire</label>
-                            <el-select v-model="ruleForm.poll" filterable @change="loadTable('ruleForm')" size="mini">
-                                <el-option v-for="item in combo.polls" :key="item" :label="item" :value="item"></el-option>
+                            <el-select v-model="ruleForm.poll.id" filterable @change="pollChange()" size="mini">
+                                <el-option v-for="item in combo.polls" :key="item.id" :label="item.name" :value="item.id"></el-option>
                             </el-select>
                         </el-form>
                     </el-col> 
@@ -67,7 +67,7 @@
         <el-row :gutter="24">
             <el-col :xs="24" :sm="24" :md="24" :lg="24">
                 <label for="question">Question</label>
-                <el-select v-model="ruleForm.organization" filterable @change="loadQuestionChat()" size="mini">
+                <el-select v-model="ruleFormStats.question" filterable @change="loadQuestionChart()" size="mini" width="100px">
                     <el-option v-for="item in comboStats.questions" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
             </el-col>
