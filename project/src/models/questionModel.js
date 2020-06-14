@@ -16,8 +16,8 @@ question.create = (newquestion, result) => {
             result(err, null);
             return;
         }
-        console.log("created question: ", {id: res.insertId, ...newquestion});
-        result(null, {id: res.insertId, ...newquestion});
+        console.log("created question: ", res.insertId);
+        result(null, res.insertId);
     });
 };
 
@@ -65,42 +65,62 @@ question.findByPollId = (pollId, result) => {
     });
 };
 
-question.updateById = (id, question, result) => {
+question.findByIdAndPollId = (pollId, id, result) => {
+    bd.query('SELECT * FROM Question WHERE enc_id = ? and id = ?', [pollId, id], (err, res) => {
+        if (err) {
+            console.log("error: ", err);
+            result(err, null);
+            return;
+        }
+        if (res.length) {
+            console.log("found questions: ", res);
+            result({kind: "found"}, res);
+            return;
+        }
+        result({kind: "not_found"}, null);
+    });
+}
+
+question.updateById = (question, result) => {
     bd.query(
-      "UPDATE Question SET enc_id = ?, body = ?, defined_answers = ? WHERE id = ?",
-      [question.name, question.adress, question.phone, question.web, id], (err, res) => {
+      "UPDATE Question SET body = ?, defined_answers = ? WHERE id = ? AND enc_id = ?",
+      [question.body, question.defined_answers, question.id, question.enc_id], (err, res) => {
         if (err) {
           console.log("error: ", err);
           result(null, err);
           return;
         }
   
-        if (res.affectedRows == 0) {
+        else if (res.affectedRows == 0) {
           // not found question with the id
           result({ kind: "not_found" }, null);
           return;
         }
   
-        console.log("updated question: ", { id: id, ...question });
-        result(null, { id: id, ...question });
+        else {
+            console.log("updated question: ", { id: question.id, ...question });
+            result(null, { id: question.id, ...question });
+            return;
+        }
       });
 };
 
-question.remove = (id, result) => {
-    bd.query("DELETE FROM Question WHERE id = ?", id, (err, res) => {
+question.remove = (pollId, questionId, result) => {
+    bd.query("DELETE FROM Question WHERE id = ? AND enc_id = ?", [questionId, pollId], (err, res) => {
     if (err) {
         console.log("error: ", err);
         result(null, err);
         return;
     }
-    if (res.affectedRows == 0) {
+    else if (res.affectedRows == 0) {
         // not found question with the id
-        result({ kind: "not_found" }, null);
+        result({kind: "not found" }, null);
         return;
     }
-
-    console.log("deleted question with id: ", id);
-    result(null, res);
+    else {
+        console.log("deleted question with id: ", pollId);
+        result(null, res);
+    }
     });
 };
 

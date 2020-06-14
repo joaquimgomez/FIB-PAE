@@ -15,13 +15,13 @@ poll.create = (newpoll, result) => {
             result(err, null);
             return;
         }
-        console.log("created poll: ", {id: res.insertId, ...newpoll});
-        result(null, {id: res.insertId, ...newpoll});
+        console.log("created poll: ", res.insertId);
+        result(null, res.insertId);
     });
 };
 
 poll.getAll = result => {
-    bd.query("SELECT * FROM Poll", (err, res) => {
+    bd.query("select p.id,  p.name, p.created_at, p.org_id, o.name as org_name from Poll p, Organization o where p.org_id = o.id order by created_at asc;", (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -50,8 +50,9 @@ poll.findById = (pollId, result) => {
 
 poll.updateById = (id, poll, result) => {
     bd.query(
-      "UPDATE Poll SET name = ?, org_id = ? WHERE id = ?",
-      [poll.name, poll.adress, poll.phone, poll.web, id], (err, res) => {
+      "UPDATE Poll SET name = ?, org_id = ?, last_modify = ? WHERE id = ?",
+      //[poll.name, poll.adress, poll.phone, poll.web, id], (err, res) => {
+      [poll.name, poll.org_id, poll.last_modify, id], (err, res) => {
         if (err) {
           console.log("error: ", err);
           result(null, err);

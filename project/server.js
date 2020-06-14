@@ -4,11 +4,6 @@ const cors = require("cors");
 
 const app = express();
 
-var corsOptions = {
-  origin: "http://localhost:8081",
-  origin: "http://localhost:3000"
-};
-
 app.use(cors());
 
 // parse requests of content-type - application/json
@@ -27,13 +22,16 @@ db.sequelize.sync();
 
 // simple route
 app.get("/", (req, res) => {
-  res.json({ message: "Welcome to bezkoder application." });
+  res.json({ message: "Welcome to PAE-FIB application." });
 });
 
-require("./app/routes/turorial.routes")(app);
+require("./src/routes/organizationRoutes")(app);
+require("./src/routes/pollRoutes")(app);
+require("./src/routes/realizedPollRoutes")(app);
+require("./src/routes/questionRoutes")(app);
+require("./src/routes/checkBoxRoutes")(app);
 
 // set port, listen for requests
-const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
+app.listen(3000, () => {
+  console.log("Server is running on port 3000.");
 });

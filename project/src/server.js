@@ -14,6 +14,14 @@ app.use(bodyParser.json({limit: '50mb', extended: true}))
 //app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}))
 
+const db = require("./app/models");
+
+db.sequelize.sync();
+// // drop the table if it already exists
+// db.sequelize.sync({ force: true }).then(() => {
+//   console.log("Drop and re-sync db.");
+// });
+
 // simple route
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to application." });
