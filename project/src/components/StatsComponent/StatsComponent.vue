@@ -14,37 +14,44 @@ export default {
   name: 'StatsComponent',
   data () {
       return {
+        //Filter
+        labels:{
+          poll:"Questionnaire",
+          center: "Center",
+        },
+        ruleForm:{
+          poll: "",
+          center: "",
+          startDate: "",
+          endDate: ""
+        },
+        combo:{
+          polls: [],
+          centers: [],
+        },
+        //END filter      
+
+        //Table
         tableData: [],
         columns: [
           {
-            prop: "question", 
-            label: "Pregunta", 
-            width: 400
+            prop: "center", 
+            label: "Center", 
+            width: 100
           },
           { 
-            label: "Respuesta", 
-            minwidth: 50, 
+            label: "Date", 
+            width: 100, 
             sortable: true,
-            slotName: "answer" ,
-            show: false
-          },
+            prop: "date",
+          },          
           {
-            label: "Problema", 
-            width: 200,
-            slotName: "problem",
-            required: true
-          },
-          {
-            label: "Medida", 
-            width: 200,
-            slotName: "measure"
-          },
-          {
-            label: "Comentario", 
-            width: 200,
-            slotName: "comment"
+            label: "Núm. answers", 
+            width: 150,
+            prop: "numAnswers"
           }
         ],
+        //END table
       }
   },
   computed: {
@@ -65,6 +72,9 @@ export default {
         else return a[order.prop] - b[order.prop];
       });
     },
+    loadTable(){
+
+    }
   },
   mounted(){
   },
