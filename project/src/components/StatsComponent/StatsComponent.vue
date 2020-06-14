@@ -77,6 +77,19 @@ export default {
     }
   },
   mounted(){
+
+    //Get centers
+    axios.get(
+        ""
+      )
+      .then(response => {
+        console.log("Response: ", response);
+        
+      })
+      .catch(error => {
+        this.launchNotify("Error", "Error al hacer get de los centros", "error");
+        console.log(error);
+      });
   },
 
   components:{ }
