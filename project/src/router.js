@@ -27,11 +27,11 @@ export default new Router({
       name: "dasboard",
       component: () => import("./components/DashboardComponent/DashboardComponent")
     },
-    // {
-    //   path: "/app",
-    //   name: "main",
-    //   component: () => import("./components/MainComponent/MainComponent")
-    // },
+    {
+       path: "/app/newquestionnaire",
+       name: "newquestionnaire",
+       component: () => import("./components/NewQuestionnaireComponent/NewQuestionnaireComponent")
+    },
     {
       path: "/app/questionnaire",
       name: "questionnaire",
