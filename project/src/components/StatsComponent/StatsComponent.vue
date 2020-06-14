@@ -27,7 +27,7 @@ export default {
         },
         combo:{
           polls: [],
-          centers: [],
+          organizations: [],
         },
         //END filter      
 
@@ -76,22 +76,38 @@ export default {
 
     },
     search(){
-      
+
     }
   },
   mounted(){
-
+    //Fill polls combo
     axios.get(
-        "http://localhost:3000/organization"
-      )
-      .then(response => {
-        console.log("response: ", response);
-        
-      })
-      .catch(error => {
-        this.launchNotify("Error", "Error al hacer get de las organizaciones", "error");
-        console.log(error);
-      });
+      "http://localhost:3000/poll"
+    )
+    .then(response => {
+      response.data.forEach(p => {
+        this.combo.polls.push(p.name);
+      });      
+    })
+    .catch(error => {
+      this.launchNotify("Error", "Error al hacer get de las polls", "error");
+      console.log(error);
+    });
+
+    //Fill organizations combo
+    axios.get(
+      "http://localhost:3000/organization"
+    )
+    .then(response => {
+      response.data.forEach(o => {
+        this.combo.organizations.push(o.name);
+      });      
+    })
+    .catch(error => {
+      this.launchNotify("Error", "Error al hacer get de las organizaciones", "error");
+      console.log(error);
+    });
+
   },
 
   components:{ }
