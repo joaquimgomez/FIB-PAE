@@ -60,4 +60,23 @@
     <el-search-table-pagination type="local" :data="tableData" :page-sizes="[10, 15, 20]" :columns="columns" @sort-change="onSortChange">
 
     </el-search-table-pagination>
+
+    <br>
+
+    <div>
+        <el-row :gutter="24">
+            <el-col :xs="24" :sm="24" :md="24" :lg="24">
+                <label for="question">Question</label>
+                <el-select v-model="ruleForm.organization" filterable @change="loadQuestionChat()" size="mini">
+                    <el-option v-for="item in comboStats.questions" :key="item" :label="item" :value="item"></el-option>
+                </el-select>
+            </el-col>
+        </el-row>
+        <el-row :gutter="24">
+            <el-col :xs="24" :sm="24" :md="24" :lg="24">
+                <apexchart type="pie" :options="chartOptions" :series="series"></apexchart>
+            </el-col>
+        </el-row>
+    </div>
+    
 </div>

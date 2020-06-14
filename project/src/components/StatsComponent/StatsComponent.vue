@@ -5,7 +5,9 @@ import VueAxios from 'vue-axios'
 import Vuex from 'vuex'
 import { mapState } from 'vuex';
 import ElSearchTablePagination from "el-search-table-pagination";
+import VueApexCharts from 'vue-apexcharts'
 
+Vue.component('apexchart', VueApexCharts);
 Vue.use(VueAxios, axios);
 Vue.use(Vuex);
 Vue.use(ElSearchTablePagination);
@@ -52,8 +54,35 @@ export default {
           }
         ],
         //END table
-      }
+
+        //pie chart
+        comboStats: {
+          questions: [],
+        },
+
+        series: [44, 55, 13, 43, 22],
+        chartOptions: {
+          chart: {
+            //width: 380,
+            type: 'pie',
+          },
+          labels: ['Team A', 'Team B', 'Team C', 'Team D', 'Team E'],
+          responsive: [{
+            breakpoint: 480,
+            options: {
+              chart: {
+                //width: 200
+              },
+              legend: {
+                position: 'bottom'
+              }
+            }
+          }]
+        }
+        //END pie chart
+    }
   },
+  components:{ apexchart: VueApexCharts },
   computed: {
     ...mapState([
     ])
@@ -87,7 +116,8 @@ export default {
     .then(response => {
       response.data.forEach(p => {
         this.combo.polls.push(p.name);
-      });      
+      });
+      this.ruleForm.poll = this.combo.polls[0];      
     })
     .catch(error => {
       this.launchNotify("Error", "Error al hacer get de las polls", "error");
@@ -110,7 +140,7 @@ export default {
 
   },
 
-  components:{ }
+  
 
 }
 </script>
