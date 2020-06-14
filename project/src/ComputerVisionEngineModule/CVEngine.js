@@ -77,7 +77,7 @@ class ComputerVisionEngineProblemSolver {
 class TextProblemSolver extends ComputerVisionEngineProblemSolver {
 	// --------------- CLASS FIELDS ---------------
 
-	imagePath = './tmp/generated/';	// Field for the image path for the subclass TextProblemSolver
+	imagePath = DEFAULT_TMP_IMAGES_PATH;	// Field for the image path for the subclass TextProblemSolver
 
 
 	// --------------- CLASS FUNCTIONS ---------------
@@ -406,8 +406,12 @@ class ComputerVisionEngine {
 	 * @param {*} image 
 	 */
 	constructor(image, typesQuestions) {
+		// Decode image
+		const base64data = image.replace('data:image/jpeg;base64','').replace('data:image/png;base64',''); //Strip image type prefix
+		const buffer = Buffer.from(base64data, 'base64');
+		this.image = cv.imdecode(buffer);
+
 		// Image copies
-		this.image = image;
 		this.grayScaleImage = this.image.copy();
 		this.toShowImage = this.image.copy();
 
@@ -497,7 +501,7 @@ class ComputerVisionEngine {
 			let solver;
 			if(this.responsesTypes[i] == 'text') {
 				solver = new TextProblemSolver(subproblems[i]);
-			} else if (this.responsesTypes[i] == 'icons-checkbox') {
+			} else if (this.responsesTypes[i] == 'image') {
 				solver = new IconsProblemSolver(subproblems[i]);
 			} else {
 				solver = new CheckboxesProblemSolver(subproblems[i]);
