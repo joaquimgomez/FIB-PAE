@@ -85,8 +85,13 @@ label{
 .container-questionnaire{
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 2rem;
 }
 
 .label-checkbox{
   padding-top: 10px;
+}
+
+.el-card__body{
+  padding: 20px!important;
 }

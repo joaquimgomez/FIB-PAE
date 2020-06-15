@@ -10,7 +10,7 @@ const organization = function(organization) {
 }
 
 organization.create = (neworganization, result) => {
-    bd.query("INSERT INTO organization SET ?", neworganization, (err, res) => {
+    bd.query("INSERT INTO Organization SET ?", neworganization, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -34,7 +34,7 @@ organization.getAll = result => {
 };
 
 organization.findById = (organizationId, result) => {
-    bd.query('SELECT * FROM organization WHERE id = ' + organizationId, (err, res) => {
+    bd.query('SELECT * FROM Organization WHERE id = ' + organizationId, (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -51,7 +51,7 @@ organization.findById = (organizationId, result) => {
 
 organization.updateById = (id, organization, result) => {
     bd.query(
-      "UPDATE organization SET name = ?, adress = ?, phone = ?, web = ? WHERE id = ?",
+      "UPDATE Organization SET name = ?, adress = ?, phone = ?, web = ? WHERE id = ?",
       [organization.name, organization.adress, organization.phone, organization.web, id], (err, res) => {
         if (err) {
           console.log("error: ", err);
@@ -71,7 +71,7 @@ organization.updateById = (id, organization, result) => {
 };
 
 organization.remove = (id, result) => {
-    bd.query("DELETE FROM organization WHERE id = ?", id, (err, res) => {
+    bd.query("DELETE FROM Organization WHERE id = ?", id, (err, res) => {
     if (err) {
         console.log("error: ", err);
         result(null, err);
@@ -89,7 +89,7 @@ organization.remove = (id, result) => {
 };
 
 organization.removeAll = result => {
-    bd.query("DELETE FROM organization", (err, res) => {
+    bd.query("DELETE FROM Organization", (err, res) => {
     if (err) {
         console.log("error: ", err);
         result(null, err);

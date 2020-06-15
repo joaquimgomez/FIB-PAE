@@ -75,7 +75,7 @@ pollster.updateById = (id, pollster, result) => {
 };
 
 pollster.remove = (id, result) => {
-    bd.query("DELETE FROM pollster WHERE id = ?", id, (err, res) => {
+    bd.query("DELETE FROM pollster WHERE id = ", id, (err, res) => {
     if (err) {
         console.log("error: ", err);
         result(null, err);

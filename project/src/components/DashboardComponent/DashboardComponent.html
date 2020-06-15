@@ -17,17 +17,15 @@
     </el-row>
     <el-row style="padding-top: 5%;">
         <el-col :offset="2" :xs="20" :sm="20">
-            <el-button style="background-color:plum;text-align: left; height: 75px; " shadow="always">
-                <a href="/app/questionnaire">
-                    <el-row>
-                        <el-col :xs="8" :sm="8">
-                            <img src="../../assets/questionnaire.png" class="image" style="margin-left: 10px;">
-                        </el-col>
-                        <el-col :xs="4" :sm="4">
-                            <h6 style="vertical-align: center;">Questionnaire</h6>
-                        </el-col>
-                    </el-row>
-                </a>
+            <el-button style="background-color:plum;text-align: left; height: 75px; " shadow="always" @click="showDialog=true">
+                <el-row>
+                    <el-col :xs="8" :sm="8">
+                        <img src="../../assets/questionnaire.png" class="image" style="margin-left: 10px;">
+                    </el-col>
+                    <el-col :xs="4" :sm="4">
+                        <h6 style="vertical-align: center;">Questionnaire</h6>
+                    </el-col>
+                </el-row>
             </el-button>
         </el-col>
     </el-row>
@@ -46,5 +44,25 @@
                 </a>
             </el-button>
         </el-col>        
-      </el-row>
+    </el-row>
+
+
+    <el-dialog title="Questionnaires available" width="fit-content" :visible.sync="showDialog">
+        <el-row>
+            <el-col :xs="24" style="text-align: center;">
+                <el-table v-loading="loading" type="local" :data="tableData" @sort-change="onSortChange">
+                      <el-table-column prop="name" label="Name" width="100" sortable="true"></el-table-column>
+                      <el-table-column prop="organization" label="Organization" width="130" sortable="true"></el-table-column>
+                      <!-- <el-table-column prop="date" label="Date" width="90" sortable="true"></el-table-column> -->
+                      <el-table-column prop="action" label="Answer" width="70">
+                        <template slot-scope="scope">
+                            <el-button class="action-button" size="small" plain icon="el-icon-edit" @click="setQuestionnaire(scope.$index, scope.row)"></el-button>
+                        </template>
+                      </el-table-column>
+                </el-table>
+            </el-col>
+          </el-row>
+    </el-dialog>
 </div>
+
+

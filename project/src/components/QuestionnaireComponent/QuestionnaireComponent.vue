@@ -7,11 +7,10 @@ import { mapState } from "vuex";
 import axios from "axios";
 import VueAxios from "vue-axios";
 import "element-ui/lib/theme-chalk/index.css";
-
-//import TutorialDataService from "../../services/TutorialDataService";
+import { WebCam } from "vue-web-cam";
 
 Vue.use(VueAxios, axios);
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default {
   name: "QuestionnaireComponent",
@@ -19,6 +18,13 @@ export default {
     return {
       name__view: "Questionnaire",
       name__questionnaire: "",
+
+      /*Photo*/
+      showDialogCamera: false,
+      img: null,
+      camera: null,
+      deviceId: null,
+      devices: [],
 
       labels:{
         name: "Name",
@@ -56,10 +62,26 @@ export default {
     }
     
   },
-  components: {},
+  components: { 'vue-web-cam': WebCam },
   computed: {
     ...mapState([
-    ])
+    ]),
+    device: function() {
+        return this.devices.find(n => n.deviceId === this.deviceId);
+    }
+  },
+   watch: {
+      camera: function(id) {
+          this.deviceId = id;
+      },
+      devices: function() {
+          // Once we have a list select the first one
+          const [first] = this.devices;
+          if (first) {
+              this.camera = first.deviceId;
+              this.deviceId = first.deviceId;
+          }
+      }
   },
   methods: {
     launchNotify(title, message, type) {
@@ -99,19 +121,74 @@ export default {
         this.launchNotify("Error", "Error al hacer post de la enquesta", "error");
         console.log(error);
       });
+    },
+    showCamera(){
+      this.showDialogCamera = true;
+    },
+    onCapture() {
+      var self = this;
+      this.img = this.$refs.webcam.capture();
+      
+      var responsesTypes = [];
+      this.questions.forEach(q => {
+        responsesTypes.push(q.type);
+      });
+
+      axios.post("http://localhost:3000/uploadImage",
+      {
+        file: self.img,
+        expected_data: responsesTypes
+      })
+      .then(response => {
+        console.log("Take photo works", response);
+      })
+      .catch(error => {
+        this.launchNotify("Error", "Error al hacer post de la foto", "error");
+        console.log(error);
+      });
+
+    },
+    onStarted(stream) {
+        console.log("On Started Event", stream);
+    },
+    onStopped(stream) {
+        console.log("On Stopped Event", stream);
+    },
+    onStop() {
+        this.$refs.webcam.stop();
+    },
+    onStart() {
+        this.$refs.webcam.start();
+    },
+    onError(error) {
+        console.log("On Error Event", error);
+    },
+    onCameras(cameras) {
+        this.devices = cameras;
+        console.log("On Cameras Event", cameras);
+    },
+    onCameraChange(deviceId) {
+        this.deviceId = deviceId;
+        this.camera = deviceId;
+        console.log("On Camera Change Event", deviceId);
     }
   },
   mounted(){
     var self = this;
+    
+    console.log("id_ques", this.id_questionnaire);
+
+    var url = "http://localhost:3000/poll/" + this.id_questionnaire;
+    console.log("URL: ", url);
 
     //Call get poll
-    //TODO ahora hardcoded el id de la poll
     axios.get(
-        "http://localhost:3000/poll/2"
+        url
       )
       .then(response => {
-        var data = response.data;
+        var data = response;
 
+        console.log("Data: ", response);
         //Save questionnaire name
         self.name__questionnaire = data.name;
 
@@ -122,7 +199,7 @@ export default {
         this.result.centr_id = 1;
         this.result.enq_id = 1;
 
-        var data_questions = response.data.questions;
+        var data_questions = data.questions;
 
         data_questions.forEach(q => {
           var data_checkBoxes = [];
@@ -165,18 +242,6 @@ export default {
         this.launchNotify("Error", "Error al hacer get de la encuesta", "error");
         console.log(error);
       });
-
-
-      //TODO prueba pregunta con imagenes
-      // this.questions.push({
-      //   index: 4,
-      //   question_label: "Prueba pregunta con imagenes",
-      //   type: "image",
-      //   checkBoxes: self.src_images,
-      //   checkBox_selected: "",
-      //   answer:""
-      // });
-      console.log("Questions: ", this.questions);
   }
 };
 

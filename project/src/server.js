@@ -7,10 +7,20 @@ const app = express();
 app.use(cors());
 
 // parse requests of content-type: application/json
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb', extended: true}))
 
 // parse requests of content-type: application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
+//app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}))
+
+const db = require("./app/models");
+
+db.sequelize.sync();
+// // drop the table if it already exists
+// db.sequelize.sync({ force: true }).then(() => {
+//   console.log("Drop and re-sync db.");
+// });
 
 // simple route
 app.get("/", (req, res) => {
@@ -20,6 +30,7 @@ app.get("/", (req, res) => {
 require("./routes/organizationRoutes")(app);
 require("./routes/pollRoutes")(app);
 require("./routes/realizedPollRoutes")(app);
+require("./routes/computerVisionEngineRoutes")(app);
 
 // set port, listen for requests
 app.listen(3000, () => {
