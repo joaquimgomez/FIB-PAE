@@ -113,6 +113,23 @@ exports.post = function(req, res, next) {
         console.log(err);
         next(err);
         res.status(503).send(err);
-        return;
+        return next(err);
+    }
+}
+
+exports.findAll = function(req, res, next) {
+    if (!req.body){
+        res.status(400).send({
+            message: "Content can not be empty!"
+        });
+        return next("Content can not be empty!");
+    }
+    try {
+        
+    } catch (err) {
+        console.log(err);
+        next(err);
+        res.status(503).send(err);
+        return next(err);
     }
 }
