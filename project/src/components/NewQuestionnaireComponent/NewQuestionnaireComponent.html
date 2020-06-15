@@ -1,0 +1,42 @@
+<div>
+    <el-card style="background-color: #dab8f5;">
+        <el-form >
+            <el-form-item prop="title">
+                <el-input v-model="name" placeholder="Questionnaire name"></el-input>
+            </el-form-item>
+            <br>
+            <el-row>
+                <el-col :span="12">
+                    Number of questions
+                </el-col>
+                <el-col :span="12">
+                    <el-input-number v-model="num" :min="1"></el-input-number>
+                </el-col>
+            </el-row>
+            <br>
+            <el-row v-if="organizations != null">
+                <el-col :span="12">Organization</el-col>
+            
+                <el-col :span="12">
+                    <select v-model="org_id">
+                        <option v-for="o in organizations" v-bind:value="o.id">{{o.name}}</option>
+                    </select>
+                </el-col>
+            </el-row>
+
+            <br>
+            <div v-if="created" v-for="n in num">
+                <questionform :number=n></questionform>
+                <br>
+            </div>
+
+            <br>
+            <el-row>
+                <div class="wrapper">
+                    <el-button type="primary" v-on:click="create">Create</el-button>
+                    <el-button>Cancel</el-button>
+                </div>
+            </el-row>
+        </el-form>
+    </el-card>
+</div>

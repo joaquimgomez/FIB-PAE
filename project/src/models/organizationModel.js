@@ -22,7 +22,7 @@ organization.create = (neworganization, result) => {
 };
 
 organization.getAll = result => {
-    bd.query("SELECT * FROM Organization", (err, res) => {
+    bd.query("SELECT o.name, o.id FROM Organization o", (err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
