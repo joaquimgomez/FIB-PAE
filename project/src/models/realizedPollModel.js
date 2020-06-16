@@ -106,7 +106,7 @@ realizedPoll.removeAll = result => {
 };
   
 realizedPoll.findAllByParams = (org, pollId, dateIni, dateFin, result) => {
-    bd.query("SELECT DISTINCT rp.id , rp.centr_id , c.name as center_name, o.name as org_name, rp.`date`, rp.enq_id , rp.respuestas "
+    bd.query("SELECT DISTINCT rp.id , rp.centr_id , c.name as center_name, o.name as org_name, rp.`date`, rp.enc_id , rp.respuestas "
             + "FROM RealizedPoll rp right join Center c on rp.centr_id = c.id right join Organization o on c.org_id = o.id  "
             + "WHERE (" + org +" is null or (centr_id = " + org + " and c.id = " + org + ")) "
             + "and (" + pollId + " is null or enc_id = " + pollId + ") and "

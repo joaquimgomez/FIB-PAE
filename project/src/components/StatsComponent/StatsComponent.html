@@ -13,7 +13,7 @@
                         </el-form>
                     </el-col> 
                 </el-row>
-                <el-row :gutter="24">
+                <el-row :gutter="24" >
                     <!-- Center -->
                     <el-col :xs="24" :sm="24" :md="24" :lg="24">
                         <el-form :label="labels.center" prop="center">
@@ -56,10 +56,10 @@
 
                 <el-row :gutter="24">
                     <!-- Button reset , search and new msfd -->
-                    <el-col :xs="8" :sm="2" :md="2" :lg="4" :offset="4" style="text-align: right;">
-                        <el-button type="warning" plain size="small" icon="el-icon-refresh-left" @click="resetForm('ruleForm')" style="margin-top: 20px">Clean</el-button>
+                    <el-col :xs="12" :sm="2" :md="2" :lg="2" style="text-align: right;">
+                        <el-button type="warning" plain size="small" icon="el-icon-refresh-left" @click="resetForm('ruleForm')" style="margin-top: 10px">Clean</el-button>
                     </el-col>
-                    <el-col :xs="8" :sm="2" :md="2" :lg="2">
+                    <el-col :xs="12" :sm="2" :md="2" :lg="2">
                         <el-button class="custom-button" size="small" icon="el-icon-search" @click="search('ruleForm')">Search</el-button>
                     </el-col>
                 </el-row>
@@ -69,6 +69,10 @@
     </el-row>
 
     <el-search-table-pagination type="local" :data="tableData" :page-sizes="[10, 15, 20]" :columns="columns" @sort-change="onSortChange">
+
+        <template slot="details" slot-scope="scope" style="padding-top:0;">
+            <el-button icon="el-icon-search" type="info" circle @click="openDialog(scope.row)" size="mini"></el-button>
+        </template>
 
     </el-search-table-pagination>
 
@@ -90,4 +94,18 @@
         </el-row>
     </div>
     
+
+    <el-dialog title="Answers" width="fit-content" :visible.sync="showDialog">
+        <div v-for="(answer, index) in selectedAnswers">
+            <!-- Question -->
+            <el-row>
+                <label style="color:rgb(105, 103, 103);font-size: initial;">{{ answer.question }}</label>
+
+                <!-- Text answers -->
+                <div>
+                    <el-input v-model="answer.answer" type="textarea" :autosize="{ minRows: 2, maxRows: 6 }" :disabled="true"></el-input>
+                </div>
+            </el-row>
+        </div>
+    </el-dialog>
 </div>

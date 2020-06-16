@@ -16,6 +16,9 @@ export default {
   name: 'StatsComponent',
   data () {
       return {
+        showDialog: false,
+        selectedAnswers: [],
+
         //Filter
         labels:{
           poll:"Questionnaire",
@@ -39,21 +42,30 @@ export default {
         tableData: [],
         columns: [
           {
-            prop: "centr_id", 
+            prop: "center_name", 
             label: "Center", 
             width: 100
           },
+          {
+            label: "Organization", 
+            width: 110,
+            prop: "org_name"
+          },
           { 
             label: "Date", 
-            width: 100, 
+            width: 95, 
             sortable: true,
             prop: "date",
+            formatter: (value) => {
+              return new Date(value.date).toISOString().split('T')[0];
+            }
+          }, 
+          { 
+            label: "Details", 
+            width: 70, 
+            slotName: "details",
           },          
-          {
-            label: "Núm. answers", 
-            width: 150,
-            prop: "numAnswers"
-          }
+          
         ],
         //END table
 
@@ -86,7 +98,7 @@ export default {
   },
   components:{ apexchart: VueApexCharts },
   computed: {
-    ...mapState([
+    ...mapState([ "answers"
     ])
   },
   methods: {
@@ -112,12 +124,16 @@ export default {
     loadTable(){
       var idPoll = "";
       if(this.ruleForm.poll) idPoll = this.ruleForm.poll.id;
-      
-      axios.get("http://localhost:3000/realizedPoll"
+
+      var url = "http://localhost:3000/realizedPoll"
               + "?pollId=" + idPoll
               + "&org=" + ((this.ruleForm.center)?this.ruleForm.center:"")
               + "&dateIni=" + ((this.ruleForm.startDate)?this.ruleForm.startDate:"")
-              + "&dateFin=" + ((this.ruleForm.endDate)?this.ruleForm.endDate:"")
+              + "&dateFin=" + ((this.ruleForm.endDate)?this.ruleForm.endDate:"");
+
+      console.log("URL: ", url);
+      
+      axios.get(url
       )
       .then(response => {
         console.log("response realized polls: ", response.data);
@@ -152,6 +168,36 @@ export default {
         this.launchNotify("Error", "Error al hacer get de las preguntas de la poll", "error");
         console.log(error);
       });
+    },
+    openDialog(row){
+      var self = this;
+      this.$store.commit("setIdQuestionnaire", row.enc_id);
+      var jsonAnswers = JSON.parse(row.respuestas);
+      console.log("json: ", jsonAnswers);
+      this.showDialog = true;
+
+      var url = "http://localhost:3000/poll/" + row.enc_id;
+      //Call get poll
+      axios.get(
+          url
+        )
+        .then(response => {
+          var data_questions = response.data.questions;
+          var index = 0;
+          data_questions.forEach(q => {
+            console.log("json index: ", jsonAnswers[index].answer_question)
+            self.selectedAnswers.push({
+              question: q.body,
+              answer: jsonAnswers[index].answer_question
+            })
+            ++index;
+          });
+          
+        })
+        .catch(error => {
+          this.launchNotify("Error", "Error al hacer get de las preguntas de la encuesta", "error");
+          console.log(error);
+        });
     },
     loadQuestionChart(){
       //this.series
