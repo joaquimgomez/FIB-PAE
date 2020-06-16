@@ -68,6 +68,7 @@ export default {
       });
     },
     setQuestionnaire(index,row){
+      console.log("id_q: ", row.id);
       this.$store.commit("setIdQuestionnaire", row.id);
       this.$router.push('/app/questionnaire');
     }
@@ -78,7 +79,7 @@ export default {
         "http://localhost:3000/poll"
       )
       .then(response => {
-        var data = response;
+        var data = response.data;
         console.log("response data: ", data);
         
         data.forEach(q => {
