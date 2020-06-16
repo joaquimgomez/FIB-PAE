@@ -122,9 +122,11 @@ export default {
       this.ruleForm.endDate = "";
     },
     loadTable(){
+      this.tableData = [];
+
       var idPoll = "";
       if(this.ruleForm.poll) idPoll = this.ruleForm.poll.id;
-
+      console.log("center: ", this.ruleForm.center)
       var url = "http://localhost:3000/realizedPoll"
               + "?pollId=" + idPoll
               + "&org=" + ((this.ruleForm.center)?this.ruleForm.center:"")
@@ -140,7 +142,7 @@ export default {
         this.tableData = response.data; 
       })
       .catch(error => {
-        this.launchNotify("Error", "Error al hacer get de las realized polls", "error");
+        //this.launchNotify("Error", "Error al hacer get de las realized polls", "error");
         console.log(error);
       });
     },
@@ -149,6 +151,7 @@ export default {
     },
     pollChange(){
       this.loadQuestions();
+      this.loadTable();
     },
     loadQuestions(){
       var self = this;
@@ -259,7 +262,10 @@ export default {
     )
     .then(response => {
       response.data.forEach(c => {
-        this.combo.centers.push(c.name);
+        this.combo.centers.push({
+          id: c.id,
+          name: c.name
+        });
       });      
     })
     .catch(error => {
