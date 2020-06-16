@@ -121,7 +121,7 @@ export default {
       )
       .then(response => {
         console.log("response realized polls: ", response.data);
-        this.tableData = response.data;      
+        this.tableData = response.data; 
       })
       .catch(error => {
         this.launchNotify("Error", "Error al hacer get de las realized polls", "error");
