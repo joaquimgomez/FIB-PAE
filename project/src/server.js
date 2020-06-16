@@ -14,7 +14,7 @@ app.use(bodyParser.json({limit: '50mb', extended: true}))
 //app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}))
 
-const db = require("../app/models");
+const db = require("./models");
 
 db.sequelize.sync();
 // // drop the table if it already exists
@@ -30,7 +30,7 @@ app.get("/", (req, res) => {
 require("../src/routes/organizationRoutes")(app);
 require("../src/routes/pollRoutes")(app);
 require("../src/routes/realizedPollRoutes")(app);
-require("../src/routes/computerVisionEngineRoutes")(app);
+//require("../src/routes/computerVisionEngineRoutes")(app);
 require("../src/routes/questionRoutes")(app);
 require("../src/routes/checkBoxRoutes")(app);
 

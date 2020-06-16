@@ -105,5 +105,21 @@ realizedPoll.removeAll = result => {
     });
 };
   
+realizedPoll.findAllByParams = (org, pollId, dateIni, dateFin, result) => {
+    bd.query('SELECT * FROM RealizedPoll WHERE (? is null or centr_id =?) and (? is null or enc_id = ?) and (? is null or date >= ?) and (? is null or date <= ?)',
+        [org, org, pollId, pollId, dateIni, dateIni, dateFin, dateFin], (err, res) => {
+        if (err) {
+            console.log("error: ", err);
+            result(err,null);
+            return;
+        }
+        if (res.length) {
+            console.log("found realizedPolls: ", res);
+            result(err,res)
+            return;
+        }
+        result({kind: "not_found"}, null);
+    });
+};
 
 module.exports = realizedPoll;
