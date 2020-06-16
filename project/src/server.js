@@ -30,7 +30,7 @@ app.get("/", (req, res) => {
 require("../src/routes/organizationRoutes")(app);
 require("../src/routes/pollRoutes")(app);
 require("../src/routes/realizedPollRoutes")(app);
-require("../src/routes/computerVisionEngineRoutes")(app);
+//require("../src/routes/computerVisionEngineRoutes")(app);
 require("../src/routes/questionRoutes")(app);
 require("../src/routes/checkBoxRoutes")(app);
 require("../src/routes/centerRoutes")(app);
