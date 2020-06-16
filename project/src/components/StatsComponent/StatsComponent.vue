@@ -29,7 +29,7 @@ export default {
         },
         combo:{
           polls: [],
-          organizations: [],
+          centers: [],
         },
         //END filter      
 
@@ -183,13 +183,13 @@ export default {
       console.log(error);
     });
 
-    //Fill organizations combo
+    //Fill centers combo
     axios.get(
-      "http://localhost:3000/organization"
+      "http://localhost:3000/center"
     )
     .then(response => {
-      response.data.forEach(o => {
-        this.combo.organizations.push(o.name);
+      response.data.forEach(c => {
+        this.combo.centers.push(c.name);
       });      
     })
     .catch(error => {

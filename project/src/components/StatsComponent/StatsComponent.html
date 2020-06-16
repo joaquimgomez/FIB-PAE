@@ -16,10 +16,10 @@
                 <el-row :gutter="24">
                     <!-- Organization -->
                     <el-col :xs="24" :sm="24" :md="24" :lg="24">
-                        <el-form :label="labels.organization" prop="organization">
-                            <label for="organization">Organization</label>
-                            <el-select v-model="ruleForm.organization" filterable @change="loadTable('ruleForm')" size="mini">
-                                <el-option v-for="item in combo.organizations" :key="item" :label="item" :value="item"></el-option>
+                        <el-form :label="labels.center" prop="center">
+                            <label for="center">Center</label>
+                            <el-select v-model="ruleForm.center" filterable @change="loadTable('ruleForm')" size="mini">
+                                <el-option v-for="item in combo.centers" :key="item" :label="item" :value="item"></el-option>
                             </el-select>
                         </el-form>
                     </el-col>
