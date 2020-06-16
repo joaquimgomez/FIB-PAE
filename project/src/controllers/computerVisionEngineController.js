@@ -1,6 +1,50 @@
 //const cv = require('opencv4nodejs');
 const CVE = require('../ComputerVisionEngineModule/CVEngine.js');
 
+function formatResults(orgResults, responsesTypes) {
+    let results = new Array(responsesTypes.length);
+    results.fill('', 0, responsesTypes.length);
+
+    if (responsesTypes.length < orgResults.length) {
+        results.fill('', 0, responsesTypes.length);
+    } else if (responsesTypes.length > orgResults.length) {
+
+        let orgResultsPointer = 0;
+        for (let i = 0; i < responsesTypes.length; i++) {
+            let inc = false;
+
+            if (responsesTypes[i] == 'text') {
+                if (orgResults[orgResultsPointer] != "Happy" || orgResults[orgResultsPointer] != "Meh" || orgResults[orgResultsPointer] != "Sad" || isNaN(orgResults[orgResults])) {
+                    results[i] = orgResults[orgResultsPointer];
+                    inc = !inc;
+                }
+            } else if (responsesTypes[i] == 'image') {
+                if (orgResults[orgResultsPointer] == "Happy" || orgResults[orgResultsPointer] == "Meh" || orgResults[orgResultsPointer] == "Sad") {
+                    results[i] = orgResults[orgResultsPointer];
+                    inc = !inc;
+                }
+            } else {
+                if (!isNaN(orgResults[orgResultsPointer])) {
+                    results[i] = orgResults[orgResultsPointer];
+                    inc = !inc;
+                }
+            }
+
+            if (inc) {
+                orgResultsPointer++;
+            }
+        }
+    
+    } else {
+        results = orgResults.slice();
+        results.forEach(function(item, i) { 
+            if (item == 'None') 
+                results[i] = ''; 
+        });
+    }
+
+    return results;
+}
 
 exports.post = function(req, res, next) {
     if(req.body.file) {
@@ -13,7 +57,7 @@ exports.post = function(req, res, next) {
             Promise.all(results).then(values => {
                 // Sending results
                 res.status(200).send({
-                    message: values
+                    message: formatResults(values, req.body.expected_data)
                 });
             })
 

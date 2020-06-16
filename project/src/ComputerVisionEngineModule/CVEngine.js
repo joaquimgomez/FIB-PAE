@@ -528,55 +528,6 @@ class ComputerVisionEngine {
 	}
 
 	/**
- 	* Format the results
- 	* @param {*} orgResults 
-	 */
-	formatResults(orgResults) {
-		let results = new Array(this.responsesTypes.length);
-		results.fill('', 0, responsesTypes.length);
-
-		if (this.responsesTypes.length < orgResults.length) {
-			results.fill('', 0, responsesTypes.length);
-		} else if (this.responsesTypes.length > orgResults.length) {
-
-        	let orgResultsPointer = 0;
-        	for (let i = 0; i < responsesTypes.length; i++) {
-            	let inc = false;
-
-            	if (responsesTypes[i] == 'text') {
-             	   if (orgResults[orgResultsPointer] != "Happy" || orgResults[orgResultsPointer] != "Meh" || orgResults[orgResultsPointer] != "Sad" || isNaN(orgResults[orgResults])) {
-                	    results[i] = orgResults[orgResultsPointer];
-                	    inc = !inc;
-                	}
-            	} else if (responsesTypes[i] == 'image') {
-                	if (orgResults[orgResultsPointer] == "Happy" || orgResults[orgResultsPointer] == "Meh" || orgResults[orgResultsPointer] == "Sad") {
-                	    results[i] = orgResults[orgResultsPointer];
-                	    inc = !inc;
-                	}
-            	} else {
-                	if (!isNaN(orgResults[orgResultsPointer])) {
-                	    results[i] = orgResults[orgResultsPointer];
-                	    inc = !inc;
-                	}
-            	}
-
-            	if (inc) {
-                	orgResultsPointer++;
-            	}
-        	}
-        
-    	} else {
-        	results = orgResults.slice();
-        	results.forEach(function(item, i) { 
-        	    if (item == 'None') 
-        	        results[i] = ''; 
-        	});
-    	}
-
-    	return results;
-	}
-
-	/**
 	 * Starts the resolution and returns the results.
 	 */
 	run() {
@@ -589,7 +540,7 @@ class ComputerVisionEngine {
 		// Treate each subproblem image (as a matrix)
 		let results = this.subproblemsTreatment(subproblems);
 
-		return formatResults(results);
+		return results;
 	}
 }
 
