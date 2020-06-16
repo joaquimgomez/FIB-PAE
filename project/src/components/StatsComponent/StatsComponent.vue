@@ -24,12 +24,14 @@ export default {
         ruleForm:{
           poll: "",
           center: "",
+          //organization: "",
           startDate: "",
           endDate: ""
         },
         combo:{
           polls: [],
           centers: [],
+          //organizations: []
         },
         //END filter      
 
@@ -37,7 +39,7 @@ export default {
         tableData: [],
         columns: [
           {
-            prop: "center", 
+            prop: "centr_id", 
             label: "Center", 
             width: 100
           },
@@ -101,11 +103,33 @@ export default {
         else return a[order.prop] - b[order.prop];
       });
     },
+    resetForm(){
+      this.ruleForm.center = "";
+      //this.ruleForm.organization = "";
+      this.ruleForm.startDate = "";
+      this.ruleForm.endDate = "";
+    },
     loadTable(){
-
+      var idPoll = "";
+      if(this.ruleForm.poll) idPoll = this.ruleForm.poll.id;
+      
+      axios.get("http://localhost:3000/realizedPoll"
+              + "?pollId=" + idPoll
+              + "&org=" + ((this.ruleForm.center)?this.ruleForm.center:"")
+              + "&dateIni=" + ((this.ruleForm.startDate)?this.ruleForm.startDate:"")
+              + "&dateFin=" + ((this.ruleForm.endDate)?this.ruleForm.endDate:"")
+      )
+      .then(response => {
+        console.log("response realized polls: ", response.data);
+        this.tableData = response.data;      
+      })
+      .catch(error => {
+        this.launchNotify("Error", "Error al hacer get de las realized polls", "error");
+        console.log(error);
+      });
     },
     search(){
-
+      this.loadTable();
     },
     pollChange(){
       this.loadQuestions();

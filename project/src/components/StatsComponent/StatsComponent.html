@@ -14,16 +14,27 @@
                     </el-col> 
                 </el-row>
                 <el-row :gutter="24">
-                    <!-- Organization -->
+                    <!-- Center -->
                     <el-col :xs="24" :sm="24" :md="24" :lg="24">
                         <el-form :label="labels.center" prop="center">
                             <label for="center">Center</label>
-                            <el-select v-model="ruleForm.center" filterable @change="loadTable('ruleForm')" size="mini">
+                            <el-select v-model="ruleForm.center" filterable @change="loadTable()" size="mini">
                                 <el-option v-for="item in combo.centers" :key="item" :label="item" :value="item"></el-option>
                             </el-select>
                         </el-form>
                     </el-col>
                 </el-row>
+                <!-- <el-row :gutter="24" v-if="ruleForm.center">
+                     Organization 
+                    <el-col :xs="24" :sm="24" :md="24" :lg="24">
+                        <el-form :label="labels.organization" prop="organization">
+                            <label for="center">Organization</label>
+                            <el-select v-model="ruleForm.organization" filterable @change="loadTable('ruleForm')" size="mini">
+                                <el-option v-for="item in combo.organizations" :key="item" :label="item" :value="item"></el-option>
+                            </el-select>
+                        </el-form>
+                    </el-col>
+                </el-row> -->
                 <el-row :gutter="24">
                     <!-- Start Date -->
                     <el-col :xs="24" :sm="24" :md="24" :lg="24">
@@ -38,16 +49,16 @@
                     <el-col :xs="24" :sm="24" :md="24" :lg="24">
                         <el-form :label="labels.endDate" prop="endDate">
                             <label for="endDate">End date</label>
-                            <el-date-picker type="date" placeholder="Pick a date" v-model="ruleForm.ednDate" size="mini"></el-date-picker>
+                            <el-date-picker type="date" placeholder="Pick a date" v-model="ruleForm.endDate" size="mini"></el-date-picker>
                         </el-form>
                     </el-col>
                 </el-row>
 
                 <el-row :gutter="24">
                     <!-- Button reset , search and new msfd -->
-                    <!-- <el-col :xs="8" :sm="2" :md="2" :lg="4" :offset="4" style="text-align: right;">
-                        <el-button type="warning" plain size="small" icon="el-icon-refresh-left" @click="resetForm('ruleForm')" style="margin-top: 20px">Limpiar</el-button>
-                    </el-col> -->
+                    <el-col :xs="8" :sm="2" :md="2" :lg="4" :offset="4" style="text-align: right;">
+                        <el-button type="warning" plain size="small" icon="el-icon-refresh-left" @click="resetForm('ruleForm')" style="margin-top: 20px">Clean</el-button>
+                    </el-col>
                     <el-col :xs="8" :sm="2" :md="2" :lg="2">
                         <el-button class="custom-button" size="small" icon="el-icon-search" @click="search('ruleForm')">Search</el-button>
                     </el-col>
