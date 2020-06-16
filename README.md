@@ -1,4 +1,4 @@
-# FIB-PAE Project 2019-2020 Q1
+# FIB-PAE Project 2019-2020 Q2
 
 ## Authors
 The authors of this project are:
