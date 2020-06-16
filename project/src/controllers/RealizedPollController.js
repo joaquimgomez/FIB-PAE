@@ -125,14 +125,11 @@ exports.findAll = function(req, res, next) {
         return next("Content can not be empty!");
     }
     try {
-        //:org?/:pollId?/:dateIni?/:dateFin?
-        console.log(req.params.org + ' ' + req.params.pollId + ' ' + req.params.dateIni + ' ' + req.params.dateFin);
-        if (req.params.org == undefined) req.params.org = null;
-        if (req.params.pollId == undefined) req.params.pollId = null;
-        if (req.params.dateIni == undefined) req.params.dateIni = null;
-        if (req.params.dateFin == undefined) req.params.dateFin = null;
-        console.log(req.params.org + ' ' + req.params.pollId + ' ' + req.params.dateIni + ' ' + req.params.dateFin);
-        realizedPoll.findAllByParams(req.params.org, req.params.pollId, req.params.dateIni, req.params.dateFin, (err, pollData) => {
+        if (req.body.org == undefined) req.body.org = null;
+        if (req.body.pollId == undefined) req.body.pollId = null;
+        if (req.body.dateIni == undefined) req.body.dateIni = null;
+        if (req.body.dateFin == undefined) req.body.dateFin = null;
+        realizedPoll.findAllByParams(req.body.org, req.body.pollId, req.body.dateIni, req.body.dateFin, (err, pollData) => {
             if (err) {
                 if (err.kind === "not_found") {
                     res.status(404).send({
