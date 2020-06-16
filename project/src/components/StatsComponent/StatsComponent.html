@@ -95,12 +95,11 @@
     </div>
     
 
-    <el-dialog title="Answers" width="fit-content" :visible.sync="showDialog">
+    <el-dialog title="Answers" width="80%" :visible.sync="showDialog">
         <div v-for="(answer, index) in selectedAnswers">
             <!-- Question -->
             <el-row>
                 <label style="color:rgb(105, 103, 103);font-size: initial;">{{ answer.question }}</label>
-
                 <!-- Text answers -->
                 <div>
                     <el-input v-model="answer.answer" type="textarea" :autosize="{ minRows: 2, maxRows: 6 }" :disabled="true"></el-input>
