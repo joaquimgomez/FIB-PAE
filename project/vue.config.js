@@ -3,5 +3,6 @@ module.exports = {
     port: 8081,
     compress: true,
     disableHostCheck: true
-  }
+  },
+  runtimeCompiler: true
 }

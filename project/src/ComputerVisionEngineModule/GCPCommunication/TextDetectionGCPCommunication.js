@@ -31,7 +31,7 @@ const vision = require('@google-cloud/vision');
 function createClient() {
 	try {
 		// Specifies the EU as location of the api endpoint
-		const clientOptions = {keyFilename: './GCPCommunication/credentials/proyecto-pae-7440be643e92.json', apiEndpoint: 'eu-vision.googleapis.com'};
+		const clientOptions = {keyFilename: './src/ComputerVisionEngineModule/GCPCommunication/credentials/proyecto-pae-7440be643e92.json', apiEndpoint: 'eu-vision.googleapis.com'};
 
 		// Creates a client
 		const client = new vision.ImageAnnotatorClient(clientOptions);

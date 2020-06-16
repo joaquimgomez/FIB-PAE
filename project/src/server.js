@@ -7,12 +7,14 @@ const app = express();
 app.use(cors());
 
 // parse requests of content-type: application/json
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb', extended: true}))
 
 // parse requests of content-type: application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
+//app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}))
 
-const db = require("./app/models");
+const db = require("./models");
 
 db.sequelize.sync();
 // // drop the table if it already exists
@@ -25,9 +27,13 @@ app.get("/", (req, res) => {
   res.json({ message: "Welcome to application." });
 });
 
-require("./routes/organizationRoutes")(app);
-require("./routes/pollRoutes")(app);
-require("./routes/realizedPollRoutes")(app);
+require("../src/routes/organizationRoutes")(app);
+require("../src/routes/pollRoutes")(app);
+require("../src/routes/realizedPollRoutes")(app);
+//require("../src/routes/computerVisionEngineRoutes")(app);
+require("../src/routes/questionRoutes")(app);
+require("../src/routes/checkBoxRoutes")(app);
+require("../src/routes/centerRoutes")(app);
 
 // set port, listen for requests
 app.listen(3000, () => {

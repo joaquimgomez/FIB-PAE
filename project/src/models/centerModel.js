@@ -6,6 +6,7 @@ const center = function(center) {
     this.id = center.id;
     this.name = center.name;
     this.adress = center.adress;
+    this.org_id = center.org_id;
 }
 
 center.create = (newcenter, result) => {
@@ -50,8 +51,8 @@ center.findById = (centerId, result) => {
 
 center.updateById = (id, center, result) => {
     bd.query(
-      "UPDATE Center SET name = ?, adress = ? WHERE id = ?",
-      [center.name, center.adress, center.phone, center.web, id], (err, res) => {
+      "UPDATE Center SET name = ?, adress = ?, org_id = ? WHERE id = ?",
+      [center.name, center.adress, center.org_id, id], (err, res) => {
         if (err) {
           console.log("error: ", err);
           result(null, err);

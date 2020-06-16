@@ -113,6 +113,40 @@ exports.post = function(req, res, next) {
         console.log(err);
         next(err);
         res.status(503).send(err);
-        return;
+        return next(err);
+    }
+}
+
+exports.findAll = function(req, res, next) {
+    if (!req.body){
+        res.status(400).send({
+            message: "Content can not be empty!"
+        });
+        return next("Content can not be empty!");
+    }
+    try {
+        if (req.body.org == undefined) req.body.org = null;
+        if (req.body.pollId == undefined) req.body.pollId = null;
+        if (req.body.dateIni == undefined) req.body.dateIni = null;
+        if (req.body.dateFin == undefined) req.body.dateFin = null;
+        realizedPoll.findAllByParams(req.body.org, req.body.pollId, req.body.dateIni, req.body.dateFin, (err, pollData) => {
+            if (err) {
+                if (err.kind === "not_found") {
+                    res.status(404).send({
+                        message: 'There are no realized polls yet!'
+                    });
+                    return next('There are no realized polls yet!');
+                } 
+            }
+            else {
+                res.status(200).send(pollData);
+                return next(pollData);
+            }  
+        });
+    } catch (err) {
+        console.log(err);
+        next(err);
+        res.status(503).send(err);
+        return next(err);
     }
 }
