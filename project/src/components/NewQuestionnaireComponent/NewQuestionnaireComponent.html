@@ -26,7 +26,7 @@
 
             <br>
             <div v-if="created" v-for="n in num">
-                <questionform :number=n></questionform>
+                <questionform :number=n :send=send :id=given_id></questionform>
                 <br>
             </div>
 
