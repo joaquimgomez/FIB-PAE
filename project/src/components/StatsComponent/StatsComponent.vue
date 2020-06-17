@@ -99,7 +99,8 @@ export default {
 
         //Params bar chart
         barChartCategories: [],
-        barChartSeries: []
+        barChartSeries: [],
+        barChartId: 0
 
              
     }
@@ -179,13 +180,15 @@ export default {
       .then(response => {
         this.questions = response.data.questions;
 
-        this.comboStats.questions = [];        
+        this.comboStats.questions = [];  
+        this.barChartCategories = [];      
         response.data.questions.forEach(q => {
           if(q.defined_answers == 1) {
             this.comboStats.questions.push(q.body);
             this.barChartCategories.push(q.body);
           }
         });
+        this.barChartId++;
 
       })
       .catch(error => {

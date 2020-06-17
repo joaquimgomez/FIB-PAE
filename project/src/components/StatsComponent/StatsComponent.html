@@ -92,7 +92,7 @@
                 <apexchart type="pie" :options="chartOptions" :series="series"></apexchart>
             </el-col>
         </el-row>
-        <BarChartComponent :categories="barChartCategories" :series="barChartSeries"></BarChartComponent> 
+        <BarChartComponent :key="barChartId" :categories="barChartCategories" :series="barChartSeries"></BarChartComponent> 
     </div>
     
 

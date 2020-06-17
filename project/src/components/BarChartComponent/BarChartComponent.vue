@@ -75,21 +75,21 @@ export default {
                 enabled: true,
               }
             },
-            yaxis: {
-              axisBorder: {
-                show: false
-              },
-              axisTicks: {
-                show: false,
-              },
-              labels: {
-                show: false,
-                formatter: function (val) {
-                  return val + "%";
-                }
-              }
+            // yaxis: {
+            //   axisBorder: {
+            //     show: false
+            //   },
+            //   axisTicks: {
+            //     show: false,
+            //   },
+            //   labels: {
+            //     show: false,
+            //     formatter: function (val) {
+            //       return val + "%";
+            //     }
+            //   }
             
-            },
+            // },
             title: {
               text: 'Popular answers',
               floating: true,
