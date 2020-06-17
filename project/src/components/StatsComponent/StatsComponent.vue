@@ -6,6 +6,7 @@ import Vuex from 'vuex'
 import { mapState } from 'vuex';
 import ElSearchTablePagination from "el-search-table-pagination";
 import VueApexCharts from 'vue-apexcharts'
+import BarChartComponent from '@/components/BarChartComponent/BarChartComponent'
 
 Vue.component('apexchart', VueApexCharts);
 Vue.use(VueAxios, axios);
@@ -93,11 +94,17 @@ export default {
               }
             }
           }]
-        }
+        },
         //END pie chart
+
+        //Params bar chart
+        barChartCategories: [],
+        barChartSeries: []
+
+             
     }
   },
-  components:{ apexchart: VueApexCharts },
+  components:{ apexchart: VueApexCharts, BarChartComponent },
   computed: {
     ...mapState([ "answers"
     ])
@@ -161,6 +168,7 @@ export default {
     pollChange(){
       this.loadQuestions();
       this.loadTable();
+      this.loadBarChart();
     },
     loadQuestions(){
       var self = this;
@@ -173,8 +181,12 @@ export default {
 
         this.comboStats.questions = [];        
         response.data.questions.forEach(q => {
-          if(q.defined_answers == 1) this.comboStats.questions.push(q.body);
-        });      
+          if(q.defined_answers == 1) {
+            this.comboStats.questions.push(q.body);
+            this.barChartCategories.push(q.body);
+          }
+        });
+
       })
       .catch(error => {
         this.launchNotify("Error", "Error al hacer get de las preguntas de la poll", "error");
@@ -255,6 +267,9 @@ export default {
           }
         }]
       }
+    },
+    loadBarChart(){
+
     }
   },
   mounted(){
