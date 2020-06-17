@@ -18,6 +18,7 @@ export default {
       return {
         showDialog: false,
         selectedAnswers: [],
+        allAnswers: [],
 
         //Filter
         labels:{
@@ -140,11 +141,19 @@ export default {
       .then(response => {
         console.log("response realized polls: ", response.data);
         this.tableData = response.data; 
+
+        //Get all answers
+        this.tableData.forEach(poll => {
+          var jsonAnswers = JSON.parse(poll.respuestas);
+          var oneAnswers = this.getAnswers(idPoll, jsonAnswers);
+          this.allAnswers.push(oneAnswers);
+        });
       })
       .catch(error => {
         //this.launchNotify("Error", "Error al hacer get de las realized polls", "error");
         console.log(error);
-      });
+      });     
+       
     },
     search(){
       this.loadTable();
@@ -155,7 +164,7 @@ export default {
     },
     loadQuestions(){
       var self = this;
-      //Fill questions combo
+      
       axios.get(
         "http://localhost:3000/poll/" + self.ruleForm.poll.id
       )
@@ -173,34 +182,36 @@ export default {
       });
     },
     openDialog(row){
-      var self = this;
       this.$store.commit("setIdQuestionnaire", row.enc_id);
       var jsonAnswers = JSON.parse(row.respuestas);
       console.log("json: ", jsonAnswers);
       this.showDialog = true;
 
-      var url = "http://localhost:3000/poll/" + row.enc_id;
-      //Call get poll
+      this.selectedAnswers = this.getAnswers(row.enc_id, jsonAnswers);      
+    },
+    getAnswers(enc_id, jsonAnswers){
+      var answers = [];
+
       axios.get(
-          url
-        )
-        .then(response => {
-          var data_questions = response.data.questions;
-          var index = 0;
-          data_questions.forEach(q => {
-            console.log("json index: ", jsonAnswers[index].answer_question)
-            self.selectedAnswers.push({
-              question: q.body,
-              answer: jsonAnswers[index].answer_question
-            })
-            ++index;
-          });
-          
-        })
-        .catch(error => {
-          this.launchNotify("Error", "Error al hacer get de las preguntas de la encuesta", "error");
-          console.log(error);
+        "http://localhost:3000/poll/" + enc_id
+      )
+      .then(response => {
+        var data_questions = response.data.questions;
+        var index = 0;
+        data_questions.forEach(q => {
+          answers.push({
+            question: q.body,
+            answer: jsonAnswers[index].answer_question
+          })
+          ++index;
         });
+        
+      })
+      .catch(error => {
+        this.launchNotify("Error", "Error al hacer get de las preguntas de la encuesta", "error");
+        console.log(error);
+      });
+      return answers;
     },
     loadQuestionChart(){
       //this.series
@@ -208,19 +219,27 @@ export default {
       this.chartOptions.labels = [];
       var labels = [];
 
+      console.log("this.questions: ", this.questions);
       this.questions.forEach(q => {
         if(q.body == this.ruleFormStats.question) {
-          console.log("Entra en el if: ", q);
           q.answers.forEach(a => {
-            console.log("Answer: ", a.body);
-            
-            
             labels.push(a.body);
-            //TODO cambiar por los valores cuando este el get hecho
-            this.series.push(a.id);
+
+            var count = 0;
+            this.allAnswers.forEach(answers => {
+              answers.forEach(answ => {
+                console.log("Answer loop: ", answ);
+                if(answ.answer == a.body && answ.question == q.body) {
+                  console.log("ENtra en el if: ", answ.question);
+                  ++count;
+                }
+              });
+            });
+            console.log("Count: ", count);
+            this.series.push(count);
           });
         }
-      });
+      });      
 
       this.chartOptions = {
         chart: {
