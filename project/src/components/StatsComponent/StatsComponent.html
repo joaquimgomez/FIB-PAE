@@ -77,21 +77,35 @@
     </el-search-table-pagination>
 
     <br>
+    <hr>
 
     <div>
-        <el-row :gutter="24">
-            <el-col :xs="24" :sm="24" :md="24" :lg="24">
-                <label for="question">Question</label>
-                <el-select v-model="ruleFormStats.question" filterable @change="loadQuestionChart()" size="mini" width="100px">
-                    <el-option v-for="item in comboStats.questions" :key="item" :label="item" :value="item"></el-option>
-                </el-select>
-            </el-col>
-        </el-row>
-        <el-row :gutter="24">
-            <el-col :xs="24" :sm="24" :md="24" :lg="24">
-                <apexchart type="pie" :options="chartOptions" :series="series"></apexchart>
-            </el-col>
-        </el-row>
+        <el-card>
+            <el-row :gutter="24">
+                <el-col :xs="24" :sm="24" :md="24" :lg="24">
+                    <label for="question">Question</label>
+                    <el-select v-model="ruleFormStats.question" filterable @change="loadQuestionChart()" size="mini" width="100px">
+                        <el-option v-for="item in comboStats.questions" :key="item" :label="item" :value="item"></el-option>
+                    </el-select>
+                </el-col>
+            </el-row>
+            <el-row :gutter="24">
+                <el-col :xs="24" :sm="24" :md="24" :lg="24">
+                    <apexchart type="pie" :options="chartOptions" :series="series"></apexchart>
+                </el-col>
+            </el-row>
+        </el-card>
+        <br>
+        <hr>
+        <el-card>
+            <div v-for="(question, index) in comboStats.questions">
+                <el-row :gutter="24">
+                    <el-col :xs="24" :sm="24" :md="24" :lg="24">
+                        <span>{{ index+1  }} : {{ question }}</span>
+                    </el-col>
+                </el-row>
+            </div> 
+        </el-card>               
         <BarChartComponent :key="barChartId" :categories="barChartCategories" :series="barChartSeries"></BarChartComponent> 
     </div>
     

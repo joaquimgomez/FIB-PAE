@@ -181,11 +181,13 @@ export default {
         this.questions = response.data.questions;
 
         this.comboStats.questions = [];  
-        this.barChartCategories = [];      
+        this.barChartCategories = []; 
+        var count = 1;     
         response.data.questions.forEach(q => {
           if(q.defined_answers == 1) {
             this.comboStats.questions.push(q.body);
-            this.barChartCategories.push(q.body);
+            this.barChartCategories.push(count);
+            count++;
           }
         });
         this.barChartId++;

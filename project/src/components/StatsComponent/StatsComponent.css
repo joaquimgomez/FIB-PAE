@@ -13,3 +13,7 @@ form.el-form {
     color: white;
     margin-top: 10px;
 }
+
+span {
+    font-size: small;
+}
