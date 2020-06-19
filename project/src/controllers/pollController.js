@@ -178,7 +178,7 @@ exports.post = function(req, res, next) {
                     }
                 });
             }
-            res.status(201).send("poll creada con exito");
+            res.status(201).send("" + pollData);
         });
         
         
