@@ -3,11 +3,12 @@
         <el-form>
             <el-row>
                 <el-col :span="12">Question {{number}}</el-col>
-                <el-col :span="12"><select v-model="type">
-                            <option disabled value="Select a type">Select a type</option>
-                            <option>Regular</option>
-                            <option>Checkbox</option>
-                        </select>
+                <el-col :span="12">
+                        <el-select v-model="type" placeholder="Type">
+                            <el-option
+                                v-for="o in options" v-bind:key="o.value" :value="o.value" :label="o.value" >
+                            </el-option>
+                        </el-select>
                 </el-col>
             </el-row>
             <br>
@@ -53,7 +54,13 @@
                 numanswers: 2,
                 answers: [],
                 sent: false,
-                color: '#C0B8F5'
+                color: '#C0B8F5',
+                options: [{
+                    value: 'Regular'
+                },
+                {
+                    value: 'Checkbox'
+                }]
             }
         },
         methods: {
