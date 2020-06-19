@@ -23,8 +23,8 @@
                 <div v-for="n in numanswers" v-bind:key="n">
                     <el-row>
                         <br>
-                        <el-col :span="8">Option {{n}}</el-col>
-                        <el-col :span="16"><el-input v-model="answers[n-1]"></el-input></el-col>
+                        <el-col :span="6">Option {{n}}</el-col>
+                        <el-col :span="18"><el-input v-model="answers[n-1]"></el-input></el-col>
                     </el-row>
                 </div>
             </div>
@@ -33,6 +33,8 @@
 </template>
 
 <script>
+
+    import axios from 'axios'
 
     var green = "#9AEEAA";
     var red = "#B53737";
@@ -85,18 +87,54 @@
                     }
                 }
                 return true;
+            },
+            postQuestion(){
 
+                var url = "http://localhost:3000/question/poll/" + this.id;
+                var defined = 0;
+                if (this.type == 'Checkbox') defined = 1;
+
+                var answ = [];
+
+                for (var a in this.answers){
+                    var concrete = {
+                        id: parseInt(a),
+                        body: this.answers[a],
+                        image: null
+                    }
+                    answ.push(concrete);
+                }
+
+                var question = {
+                    id: this.number,
+                    body: this.body,
+                    defined_answers: defined,
+                    answers: answ
+                }
+
+                axios.post(url, question)
+                    .then(response => {
+                        console.log("POST QUESTION " + this.number + " OK", response);
+                        this.color = green;
+                        this.sent = true;
+                    })
+                    .catch(error => {
+                        this.launchNotify("Error", "Error while posting question " + this.number, 'error');
+                        console.log(error);
+                    })
+                
+
+                //console.log('sent question ' + this.number);
             }
+
         },
         watch: {
             send: function() {
                 if (!this.sent){
                     console.log('1');
                     if (this.check()){
-                        this.sent = true;
-                        this.color = green;
-                        console.log(this.color);
-                        console.log('sent question ' + this.number);
+                        this.postQuestion();
+                        //send
                     }
                 }
                 
