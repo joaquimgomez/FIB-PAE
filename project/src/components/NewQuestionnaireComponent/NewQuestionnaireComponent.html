@@ -18,9 +18,9 @@
                 <el-col :span="12">Organization</el-col>
             
                 <el-col :span="12">
-                    <select v-model="org_id">
-                        <option v-for="o in organizations" v-bind:value="o.id">{{o.name}}</option>
-                    </select>
+                    <el-select v-model="org_id" placeholder="Organization">
+                        <el-option v-for="o in organizations" :value="o.id" :label="o.name" >{{o.name}}</el-option>
+                    </el-select>
                 </el-col>
             </el-row>
 
