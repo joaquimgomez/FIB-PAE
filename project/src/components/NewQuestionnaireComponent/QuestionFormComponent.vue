@@ -161,4 +161,7 @@
     .el-card {
         background-color: var(--color);
     }
+    .el-input-number{
+        width: fit-content;
+    }
 </style>
