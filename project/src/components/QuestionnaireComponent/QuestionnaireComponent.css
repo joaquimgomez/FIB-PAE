@@ -95,3 +95,19 @@ label{
 .el-card__body{
   padding: 20px!important;
 }
+
+.photo-button {
+  width: fit-content;
+}
+
+span {
+  margin-left: 0px !important;
+}
+
+div.el-form-item__content{
+  margin-left: 0px !important;
+}
+
+div.el-row{
+  margin: 0px !important
+}

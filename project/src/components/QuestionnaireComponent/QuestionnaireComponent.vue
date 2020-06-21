@@ -16,6 +16,8 @@ export default {
   name: "QuestionnaireComponent",
   data() {
     return {
+      example: ['Anonymous', '24', 'Test', 'Sad', 'Yes. 4 Months.', '', '0', '1', 'Yes'],
+
       name__view: "Questionnaire",
       name__questionnaire: "",
 
@@ -94,7 +96,7 @@ export default {
     saveForm(){
       var date = new Date(Date.now()).toISOString().split('T')[0];
       this.result.date = date;
-      
+
       this.questions.forEach(q => {
         this.result.respuestas.push({
           answer_question: (q.type == "text")? q.answer:q.checkBox_selected
@@ -134,18 +136,33 @@ export default {
         responsesTypes.push(q.type);
       });
 
-      axios.post("http://localhost:3000/uploadImage",
-      {
-        file: self.img,
-        expected_data: responsesTypes
-      })
-      .then(response => {
-        console.log("Take photo works", response);
-      })
-      .catch(error => {
-        this.launchNotify("Error", "Error al hacer post de la foto", "error");
-        console.log(error);
-      });
+      // axios.post("http://localhost:3000/uploadImage",
+      // {
+      //   file: self.img,
+      //   expected_data: responsesTypes
+      // })
+      // .then(response => {
+      //   console.log("Take photo works", response);
+        
+      // })
+      // .catch(error => {
+      //   this.launchNotify("Error", "Error al hacer post de la foto", "error");
+      //   console.log(error);
+      // });
+
+      var index_response = 0;
+      self.questions.forEach(question => {
+        if(question.type == "text")
+          question.answer = self.example[index_response];
+        
+        else if(question.type == "image")
+          question.checkBox_selected = self.example[index_response].toLowerCase();
+
+        else
+          question.checkBox_selected = question.checkBoxes[self.example[index_response]].body;        
+        
+        index_response++;
+      });     
 
     },
     onStarted(stream) {
