@@ -16,7 +16,6 @@ export default {
   name: "QuestionnaireComponent",
   data() {
     return {
-      example: ['Anonymous', '24', 'Test', 'Sad', 'Yes. 4 Months.', '', '0', '1', 'Yes'],
       loading: false,
 
       name__view: "Questionnaire",
@@ -139,39 +138,34 @@ export default {
         responsesTypes.push(q.type);
       });
 
-      // axios.post("http://localhost:3000/uploadImage",
-      // {
-      //   file: self.img,
-      //   expected_data: responsesTypes
-      // })
-      // .then(response => {
-      //   console.log("Take photo works", response);
-        
-      // })
-      // .catch(error => {
-      //   this.launchNotify("Error", "Error al hacer post de la foto", "error");
-      //   console.log(error);
-      // });
+      axios.post("http://localhost:3000/uploadImage",
+      {
+        file: self.img,
+        expected_data: responsesTypes
+      })
+      .then(response => {
+        console.log("Take photo works", response);
+        var example = response.dataq;
 
-      var index_response = 0;
-      self.questions.forEach(question => {
-        if(question.type == "text")
-          question.answer = self.example[index_response];
-        
-        else if(question.type == "image")
-          question.checkBox_selected = self.example[index_response].toLowerCase();
+        var index_response = 0;
+        self.questions.forEach(question => {
+          if(question.type == "text")
+            question.answer = example[index_response];
+          
+          else if(question.type == "image")
+            question.checkBox_selected = example[index_response].toLowerCase();
 
-        else
-          question.checkBox_selected = question.checkBoxes[self.example[index_response]].body;        
+          else
+            question.checkBox_selected = question.checkBoxes[example[index_response]].body;        
+          
+          index_response++;
+        });  
         
-        index_response++;
-      });     
-
-      self.showDialogCamera = false;
-      setTimeout(function () {
-        self.launchNotify("Success", "Image loaded successfull", "success");
-        self.loading = false;
-      }, 5000);
+      })
+      .catch(error => {
+        this.launchNotify("Error", "Error al hacer post de la foto", "error");
+        console.log(error);
+      });        
       
 
     },
