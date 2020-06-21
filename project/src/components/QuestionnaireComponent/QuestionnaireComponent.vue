@@ -64,7 +64,7 @@ export default {
   },
   components: { 'vue-web-cam': WebCam },
   computed: {
-    ...mapState([
+    ...mapState([ "id_questionnaire"
     ]),
     device: function() {
         return this.devices.find(n => n.deviceId === this.deviceId);
@@ -101,8 +101,6 @@ export default {
         })
       });
 
-      console.log("Result: ", this.result);
-
       var self = this;
       axios.post("http://localhost:3000/realizedPoll",
       {
@@ -115,7 +113,9 @@ export default {
         respuestas: self.result.respuestas
       })
       .then(response => {
-        console.log("POST OK", response);
+        console.log("OK", response);
+        this.launchNotify("Saved", "Answers saved succesfully", "success");
+        this.$router.push('/app');
       })
       .catch(error => {
         this.launchNotify("Error", "Error al hacer post de la enquesta", "error");
@@ -175,20 +175,15 @@ export default {
   },
   mounted(){
     var self = this;
-    
-    console.log("id_ques", this.id_questionnaire);
 
     var url = "http://localhost:3000/poll/" + this.id_questionnaire;
-    console.log("URL: ", url);
 
     //Call get poll
     axios.get(
         url
       )
       .then(response => {
-        var data = response;
-
-        console.log("Data: ", response);
+        var data = response.data;
         //Save questionnaire name
         self.name__questionnaire = data.name;
 

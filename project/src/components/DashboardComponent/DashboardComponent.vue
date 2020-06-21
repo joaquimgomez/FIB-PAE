@@ -10,15 +10,12 @@ import Vuex from 'vuex'
 import QuestionnaireComponent from '@/components/QuestionnaireComponent/QuestionnaireComponent'
 import { mapState } from 'vuex';
 import "element-ui/lib/theme-chalk/index.css";
-import ElTablePagination from 'el-table-pagination'
 import ElementUI from 'element-ui'
-import locale from 'element-ui/lib/locale/lang/en'
 
 
 Vue.use(VueAxios, axios)
 Vue.use(Vuex)
-Vue.use(ElTablePagination, {locale})
-Vue.use(ElementUI, { locale })
+Vue.use(ElementUI)
 
 /**
  * Export component Main, the father component in the aplication
@@ -81,8 +78,7 @@ export default {
         "http://localhost:3000/poll"
       )
       .then(response => {
-        var data = response;
-        console.log("response data: ", data);
+        var data = response.data;
         
         data.forEach(q => {
           self.tableData.push({

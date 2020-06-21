@@ -13,5 +13,10 @@ export default {
         state.id_questionnaire = data;        
     },
 
+    setAnswers(state, data)
+    {
+        state.answers = data;        
+    },
+
 
 };

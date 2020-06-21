@@ -20,6 +20,11 @@ export default new Router({
       path: "/app/questionnaire",
       name: "questionnaire",
       component: () => import("./components/QuestionnaireComponent/QuestionnaireComponent")
+    },
+    {
+      path: "/app/stats",
+      name: "stats",
+      component: () => import("./components/StatsComponent/StatsComponent")
     }
   ]
 });

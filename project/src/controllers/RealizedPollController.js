@@ -125,12 +125,13 @@ exports.findAll = function(req, res, next) {
         return next("Content can not be empty!");
     }
     try {
-        if (req.body.org == undefined) req.body.org = null;
-        if (req.body.pollId == undefined) req.body.pollId = null;
-        if (req.body.dateIni == undefined) req.body.dateIni = null;
-        if (req.body.dateFin == undefined) req.body.dateFin = null;
-        realizedPoll.findAllByParams(req.body.org, req.body.pollId, req.body.dateIni, req.body.dateFin, (err, pollData) => {
+        if (!req.query.org) req.query.org = null;
+        if (!req.query.pollId) req.query.pollId = null;
+        if (!req.query.dateIni) req.query.dateIni = null;
+        if (!req.query.dateFin) req.query.dateFin = null;
+        realizedPoll.findAllByParams(req.query.org, req.query.pollId, req.query.dateIni, req.query.dateFin, (err, pollData) => {
             if (err) {
+                console.log("err: ", err);
                 if (err.kind === "not_found") {
                     res.status(404).send({
                         message: 'There are no realized polls yet!'
@@ -139,6 +140,7 @@ exports.findAll = function(req, res, next) {
                 } 
             }
             else {
+                console.log("QUE HAYAAAAA", req.query.pollId);
                 res.status(200).send(pollData);
                 return next(pollData);
             }  
