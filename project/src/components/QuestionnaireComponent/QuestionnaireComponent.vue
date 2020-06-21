@@ -96,8 +96,6 @@ export default {
     saveForm(){
       var date = new Date(Date.now()).toISOString().split('T')[0];
       this.result.date = date;
-      
-      console.log("questions normal: ", this.questions);
 
       this.questions.forEach(q => {
         this.result.respuestas.push({
@@ -152,8 +150,6 @@ export default {
       //   console.log(error);
       // });
 
-      console.log("questions ini: ", self.questions);
-      console.log("example: ", self.example);
       var index_response = 0;
       self.questions.forEach(question => {
         if(question.type == "text")
@@ -166,16 +162,14 @@ export default {
           question.checkBox_selected = question.checkBoxes[self.example[index_response]].body;        
         
         index_response++;
-      });
-      console.log("question final: ", this.questions);
-      
+      });     
 
     },
     onStarted(stream) {
-        console.log("On Started Event", stream);
+       
     },
     onStopped(stream) {
-        console.log("On Stopped Event", stream);
+        
     },
     onStop() {
         this.$refs.webcam.stop();
@@ -184,16 +178,16 @@ export default {
         this.$refs.webcam.start();
     },
     onError(error) {
-        console.log("On Error Event", error);
+       
     },
     onCameras(cameras) {
         this.devices = cameras;
-        console.log("On Cameras Event", cameras);
+        
     },
     onCameraChange(deviceId) {
         this.deviceId = deviceId;
         this.camera = deviceId;
-        console.log("On Camera Change Event", deviceId);
+        
     }
   },
   mounted(){
