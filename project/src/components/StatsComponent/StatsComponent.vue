@@ -100,7 +100,9 @@ export default {
         //Params bar chart
         barChartCategories: [],
         barChartSeries: [],
-        barChartId: 0
+        barChartId: 0,
+        numDefinedQuestions: [],
+        infoAnswer: []
 
              
     }
@@ -169,7 +171,6 @@ export default {
     pollChange(){
       this.loadQuestions();
       this.loadTable();
-      this.loadBarChart();
     },
     loadQuestions(){
       var self = this;
@@ -182,15 +183,21 @@ export default {
 
         this.comboStats.questions = [];  
         this.barChartCategories = []; 
-        var count = 1;     
+        this.numDefinedQuestions = [];
+        var count = 1;  
+        var numQuestion = 0;   
         response.data.questions.forEach(q => {
           if(q.defined_answers == 1) {
             this.comboStats.questions.push(q.body);
             this.barChartCategories.push(count);
             count++;
-          }
+            this.numDefinedQuestions.push(numQuestion);
+          }          
+          numQuestion++;
         });
         this.barChartId++;
+
+        this.calculatePercentageBars();
 
       })
       .catch(error => {
@@ -198,6 +205,59 @@ export default {
         console.log(error);
       });
     },
+    calculatePercentageBars(){
+      //barChartSeries
+      this.infoAnswer = [];
+      for(var l = 0; l < this.questions.length; ++l){
+        this.numDefinedQuestions.forEach(numDefined => {
+          if(numDefined == l) this.infoAnswer.push(this.questions[l].answers);
+        });
+      }
+
+      //var statisticsAnswers = []; 
+      for(var i = 0;  i < this.allAnswers.length; ++i){
+        var numA = 0;
+        let parsedobj = this.log(this.allAnswers[i]);
+        //var parsedobj = Object.keys(this.allAnswers[i]);
+        console.log("parse",parsedobj);
+        Object.keys(this.allAnswers[i]).forEach(a => {
+          console.log("kkkkkkk", numA, a);
+          var numD = 0;
+          this.numDefinedQuestions.forEach(numDef => {
+            console.log("numDef: ", numDef, " ", numA);
+            if(numDef == numA){
+              var numAnswers = this.infoAnswer[numD].length;
+              var currentAnswer = a.body;
+              console.log("COSAS: ", numAnswers, "COSAS 2: ", currentAnswer);
+
+            }
+            numD++;
+          });
+          numA++;
+
+        });
+      }
+
+
+      // this.allAnswers.forEach(answer => {
+        
+        
+      // });
+
+
+    },
+    log() {
+  for (let i = 0; i < arguments.length; i += 1) {
+    if (typeof (arguments[i]) === 'object') {
+      try {
+        arguments[i] = JSON.parse(JSON.stringify(arguments[i]));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }
+  console.log(...arguments);
+},
     openDialog(row){
       this.$store.commit("setIdQuestionnaire", row.enc_id);
       var jsonAnswers = JSON.parse(row.respuestas);
@@ -247,7 +307,7 @@ export default {
               answers.forEach(answ => {
                 console.log("Answer loop: ", answ);
                 if(answ.answer == a.body && answ.question == q.body) {
-                  console.log("ENtra en el if: ", answ.question);
+                  console.log("Entra en el if: ", answ.question);
                   ++count;
                 }
               });
@@ -272,9 +332,6 @@ export default {
           }
         }]
       }
-    },
-    loadBarChart(){
-
     }
   },
   mounted(){

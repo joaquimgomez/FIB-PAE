@@ -98,15 +98,19 @@
         <br>
         <hr>
         <el-card>
-            <div v-for="(question, index) in comboStats.questions">
-                <el-row :gutter="24">
-                    <el-col :xs="24" :sm="24" :md="24" :lg="24">
-                        <span>{{ index+1  }} : {{ question }}</span>
-                    </el-col>
-                </el-row>
-            </div> 
-        </el-card>               
-        <BarChartComponent :key="barChartId" :categories="barChartCategories" :series="barChartSeries"></BarChartComponent> 
+            <h6 style="text-align: center;">Popular answers</h6>  
+            <br>   
+            <el-card>
+                <div v-for="(question, index) in comboStats.questions">
+                    <el-row :gutter="24">
+                        <el-col :xs="24" :sm="24" :md="24" :lg="24">
+                            <span>{{ index+1  }} : {{ question }}</span>
+                        </el-col>
+                    </el-row>
+                </div> 
+            </el-card>              
+            <BarChartComponent :key="barChartId" :categories="barChartCategories" :series="barChartSeries"></BarChartComponent> 
+        </el-card>
     </div>
     
 
