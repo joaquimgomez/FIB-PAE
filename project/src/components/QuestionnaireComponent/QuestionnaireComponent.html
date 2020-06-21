@@ -38,7 +38,7 @@
                             <!-- Checkbox answers -->
                             <div class="" v-else-if="question.type == 'checkbox' || question.type == 'image'">
                                 <label class="container-radio" v-for="(checkBox, index) in question.checkBoxes" style="color:rgb(105, 103, 103);font-size: initial;">
-                                    <input type="radio" :key="index" v-model="question.checkBox_selected" :name="question.index" :value="checkBox.body"> 
+                                    <input type="radio" :key="index" v-model="question.checkBox_selected" :name="question.index" :value="checkBox.body">           
                                     <div v-if="question.type == 'checkbox'">{{ checkBox.body }}</div>
                                     <span class="checkmark"></span>
                                     <!-- Image answers -->
