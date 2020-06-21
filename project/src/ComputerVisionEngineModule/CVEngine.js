@@ -323,7 +323,7 @@ class IconsProblemSolver extends ComputerVisionEngineProblemSolver {
 
 	/**
 	 * Solve the problem detecting the possible corners of the cross over the icon.
-	 * The obtained solution is based on the following expected ordering of the icons: Happy, Meh, Sad.
+	 * The obtained solution is based on the following expected ordering of the icons: Happy, Neutral, Sad.
 	 */
 	solve() {
 		// Circle detection
@@ -372,7 +372,7 @@ class IconsProblemSolver extends ComputerVisionEngineProblemSolver {
 		if (indexOfMaxCountPerCircle == 0) {
 			return 'Happy';
 		} else if (indexOfMaxCountPerCircle == 1) {
-			return 'Meh';
+			return 'Neutral';
 		} else if (indexOfMaxCountPerCircle == 2) {
 			return 'Sad';
 		} else {

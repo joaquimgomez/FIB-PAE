@@ -14,12 +14,12 @@ function formatResults(orgResults, responsesTypes) {
             let inc = false;
 
             if (responsesTypes[i] == 'text') {
-                if (orgResults[orgResultsPointer] != "Happy" || orgResults[orgResultsPointer] != "Meh" || orgResults[orgResultsPointer] != "Sad" || isNaN(orgResults[orgResults])) {
+                if (orgResults[orgResultsPointer] != "Happy" || orgResults[orgResultsPointer] != "Nautral" || orgResults[orgResultsPointer] != "Sad" || isNaN(orgResults[orgResults])) {
                     results[i] = orgResults[orgResultsPointer];
                     inc = !inc;
                 }
             } else if (responsesTypes[i] == 'image') {
-                if (orgResults[orgResultsPointer] == "Happy" || orgResults[orgResultsPointer] == "Meh" || orgResults[orgResultsPointer] == "Sad") {
+                if (orgResults[orgResultsPointer] == "Happy" || orgResults[orgResultsPointer] == "Neutral" || orgResults[orgResultsPointer] == "Sad") {
                     results[i] = orgResults[orgResultsPointer];
                     inc = !inc;
                 }
