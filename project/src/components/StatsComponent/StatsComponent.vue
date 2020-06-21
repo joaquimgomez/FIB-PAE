@@ -204,7 +204,7 @@ export default {
         
       })
       .catch(error => {
-        this.launchNotify("Error", "Error al hacer get de las preguntas de la encuesta", "error");
+        //this.launchNotify("Error", "Error al hacer get de las preguntas de la encuesta", "error");
         console.log(error);
       });
       return answers;

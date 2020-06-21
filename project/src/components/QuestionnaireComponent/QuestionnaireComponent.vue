@@ -17,6 +17,7 @@ export default {
   data() {
     return {
       example: ['Anonymous', '24', 'Test', 'Sad', 'Yes. 4 Months.', '', '0', '1', 'Yes'],
+      loading: false,
 
       name__view: "Questionnaire",
       name__questionnaire: "",
@@ -128,6 +129,8 @@ export default {
       this.showDialogCamera = true;
     },
     onCapture() {
+      this.loading = true;
+
       var self = this;
       this.img = this.$refs.webcam.capture();
       
@@ -163,6 +166,13 @@ export default {
         
         index_response++;
       });     
+
+      self.showDialogCamera = false;
+      setTimeout(function () {
+        self.launchNotify("Success", "Image loaded successfull", "success");
+        self.loading = false;
+      }, 5000);
+      
 
     },
     onStarted(stream) {
