@@ -1,7 +1,12 @@
 
 <script>
 export default {
-  name: "app"
+  name: "app",
+  data () {
+      return {
+        url_logo: require('./assets/logo_questionnaire4u.png')
+      }
+  }
 };
 </script>
 
