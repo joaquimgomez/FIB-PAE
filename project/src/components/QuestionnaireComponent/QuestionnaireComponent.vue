@@ -101,8 +101,6 @@ export default {
         })
       });
 
-      console.log("Result: ", this.result);
-
       var self = this;
       axios.post("http://localhost:3000/realizedPoll",
       {
@@ -177,11 +175,8 @@ export default {
   },
   mounted(){
     var self = this;
-    
-    console.log("id_ques", this.id_questionnaire);
 
     var url = "http://localhost:3000/poll/" + this.id_questionnaire;
-    console.log("URL: ", url);
 
     //Call get poll
     axios.get(
@@ -189,8 +184,6 @@ export default {
       )
       .then(response => {
         var data = response.data;
-
-        console.log("Data: ", response);
         //Save questionnaire name
         self.name__questionnaire = data.name;
 

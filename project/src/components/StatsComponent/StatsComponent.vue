@@ -6,7 +6,6 @@ import Vuex from 'vuex'
 import { mapState } from 'vuex';
 import ElSearchTablePagination from "el-search-table-pagination";
 import VueApexCharts from 'vue-apexcharts'
-import BarChartComponent from '@/components/BarChartComponent/BarChartComponent'
 
 Vue.component('apexchart', VueApexCharts);
 Vue.use(VueAxios, axios);
@@ -29,14 +28,12 @@ export default {
         ruleForm:{
           poll: "",
           center: "",
-          //organization: "",
           startDate: "",
           endDate: ""
         },
         combo:{
           polls: [],
-          centers: [],
-          //organizations: []
+          centers: []
         },
         //END filter      
 
@@ -96,18 +93,10 @@ export default {
           }]
         },
         //END pie chart
-
-        //Params bar chart
-        barChartCategories: [],
-        barChartSeries: [],
-        barChartId: 0,
-        numDefinedQuestions: [],
-        infoAnswer: []
-
              
     }
   },
-  components:{ apexchart: VueApexCharts, BarChartComponent },
+  components:{ apexchart: VueApexCharts },
   computed: {
     ...mapState([ "answers"
     ])
@@ -128,7 +117,6 @@ export default {
     },
     resetForm(){
       this.ruleForm.center = "";
-      //this.ruleForm.organization = "";
       this.ruleForm.startDate = "";
       this.ruleForm.endDate = "";
     },
@@ -137,19 +125,15 @@ export default {
 
       var idPoll = "";
       if(this.ruleForm.poll) idPoll = this.ruleForm.poll.id;
-      console.log("center: ", this.ruleForm.center)
       var url = "http://localhost:3000/realizedPoll"
               + "?pollId=" + idPoll
               + "&org=" + ((this.ruleForm.center)?this.ruleForm.center:"")
               + "&dateIni=" + ((this.ruleForm.startDate)?this.ruleForm.startDate:"")
               + "&dateFin=" + ((this.ruleForm.endDate)?this.ruleForm.endDate:"");
-
-      console.log("URL: ", url);
       
       axios.get(url
       )
       .then(response => {
-        console.log("response realized polls: ", response.data);
         this.tableData = response.data; 
 
         //Get all answers
@@ -181,23 +165,12 @@ export default {
       .then(response => {
         this.questions = response.data.questions;
 
-        this.comboStats.questions = [];  
-        this.barChartCategories = []; 
-        this.numDefinedQuestions = [];
-        var count = 1;  
-        var numQuestion = 0;   
+        this.comboStats.questions = [];      
         response.data.questions.forEach(q => {
           if(q.defined_answers == 1) {
             this.comboStats.questions.push(q.body);
-            this.barChartCategories.push(count);
-            count++;
-            this.numDefinedQuestions.push(numQuestion);
           }          
-          numQuestion++;
         });
-        this.barChartId++;
-
-        this.calculatePercentageBars();
 
       })
       .catch(error => {
@@ -205,63 +178,9 @@ export default {
         console.log(error);
       });
     },
-    calculatePercentageBars(){
-      //barChartSeries
-      this.infoAnswer = [];
-      for(var l = 0; l < this.questions.length; ++l){
-        this.numDefinedQuestions.forEach(numDefined => {
-          if(numDefined == l) this.infoAnswer.push(this.questions[l].answers);
-        });
-      }
-
-      //var statisticsAnswers = []; 
-      for(var i = 0;  i < this.allAnswers.length; ++i){
-        var numA = 0;
-        let parsedobj = this.log(this.allAnswers[i]);
-        //var parsedobj = Object.keys(this.allAnswers[i]);
-        console.log("parse",parsedobj);
-        Object.keys(this.allAnswers[i]).forEach(a => {
-          console.log("kkkkkkk", numA, a);
-          var numD = 0;
-          this.numDefinedQuestions.forEach(numDef => {
-            console.log("numDef: ", numDef, " ", numA);
-            if(numDef == numA){
-              var numAnswers = this.infoAnswer[numD].length;
-              var currentAnswer = a.body;
-              console.log("COSAS: ", numAnswers, "COSAS 2: ", currentAnswer);
-
-            }
-            numD++;
-          });
-          numA++;
-
-        });
-      }
-
-
-      // this.allAnswers.forEach(answer => {
-        
-        
-      // });
-
-
-    },
-    log() {
-  for (let i = 0; i < arguments.length; i += 1) {
-    if (typeof (arguments[i]) === 'object') {
-      try {
-        arguments[i] = JSON.parse(JSON.stringify(arguments[i]));
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  }
-  console.log(...arguments);
-},
     openDialog(row){
       this.$store.commit("setIdQuestionnaire", row.enc_id);
       var jsonAnswers = JSON.parse(row.respuestas);
-      console.log("json: ", jsonAnswers);
       this.showDialog = true;
 
       this.selectedAnswers = this.getAnswers(row.enc_id, jsonAnswers);      
@@ -296,7 +215,6 @@ export default {
       this.chartOptions.labels = [];
       var labels = [];
 
-      console.log("this.questions: ", this.questions);
       this.questions.forEach(q => {
         if(q.body == this.ruleFormStats.question) {
           q.answers.forEach(a => {
@@ -305,14 +223,11 @@ export default {
             var count = 0;
             this.allAnswers.forEach(answers => {
               answers.forEach(answ => {
-                console.log("Answer loop: ", answ);
                 if(answ.answer == a.body && answ.question == q.body) {
-                  console.log("Entra en el if: ", answ.question);
                   ++count;
                 }
               });
             });
-            console.log("Count: ", count);
             this.series.push(count);
           });
         }
@@ -346,6 +261,7 @@ export default {
       this.ruleForm.poll = {id: this.combo.polls[0].id, name: this.combo.polls[0].name };
       
       this.loadQuestions(); 
+      this.loadTable();
     })
     .catch(error => {
       this.launchNotify("Error", "Error al hacer get de las polls", "error");
