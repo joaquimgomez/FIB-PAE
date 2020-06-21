@@ -16,6 +16,8 @@ export default {
   name: "QuestionnaireComponent",
   data() {
     return {
+      ejemplo: ['Anonymous', '24', 'Test', 'Sad', 'Yes. 4 Months.', '', '0', '1', 'Yes'],
+
       name__view: "Questionnaire",
       name__questionnaire: "",
 
@@ -141,6 +143,8 @@ export default {
       })
       .then(response => {
         console.log("Take photo works", response);
+        console.log("questions: ", self.questions);
+        console.log("example: ", self.example);
       })
       .catch(error => {
         this.launchNotify("Error", "Error al hacer post de la foto", "error");
