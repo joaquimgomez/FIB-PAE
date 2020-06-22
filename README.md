@@ -26,7 +26,7 @@ Before the execution of the app you should have installed all the Node.js module
 
 `npm install`
 
-It is possible that your environment needs a special treatment of the Computer Vision module. You can see the information about this at the end of this REEADME.
+It is possible that your environment needs a special treatment of the Computer Vision module. You can see the information about this at the end of this README.
 
 After that, in order to execute the project you must open two terminals, one for the backend server and another for the application itself. Firstly, you need to make:
 
