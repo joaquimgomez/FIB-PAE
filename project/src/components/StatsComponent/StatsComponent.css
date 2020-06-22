@@ -1,0 +1,19 @@
+label {
+    margin-right: 10px;
+    font-size: small;
+}
+
+form.el-form {
+    margin-bottom: 7px;
+}
+
+.custom-button {
+    background-color:  #a487d8;
+    border-color: #a487d8;
+    color: white;
+    margin-top: 10px;
+}
+
+span {
+    font-size: small;
+}

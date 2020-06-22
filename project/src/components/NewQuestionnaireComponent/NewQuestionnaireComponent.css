@@ -1,0 +1,116 @@
+.submit-form {
+    max-width: 300px;
+    margin: auto;
+  }
+  
+  .el-input__inner{
+    height: 30px;
+    border-radius: .2rem;
+  }
+  
+  /* The container */
+  .container-radio {
+    position: relative;
+    padding-left: 25px;
+    margin-bottom: 0px;
+    margin-right: 20px;
+    cursor: pointer;
+    font-size: 15px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  /* Hide the browser's default radio button */
+  .container-radio input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+  
+  /* Create a custom radio button */
+  .checkmark {
+    position: absolute;
+    top: 11px;
+    left: 0;
+    height: 15px;
+    width: 15px;
+    background-color: #eee;
+    border-radius: 50%;
+  }
+  
+  /* On mouse-over, add a grey background color */
+  .container-radio:hover input ~ .checkmark {
+    background-color: #ccc;
+  }
+  
+  /* When the radio button is checked, add a blue background */
+  .container-radio input:checked ~ .checkmark {
+    background-color: #480DB6;
+  }
+  
+  /* Create the indicator (the dot/circle - hidden when not checked) */
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+  
+  /* Show the indicator (dot/circle) when checked */
+  .container-radio input:checked ~ .checkmark:after {
+    display: block;
+  }
+  
+  /* Style the indicator (dot/circle) */
+  .container-radio .checkmark:after {
+       top: 5px;
+      left: 5px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: white;
+  }
+  
+  body{
+    overflow: auto !important;
+  }
+  
+  label{
+    font-size: smaller;
+    color:rgb(105, 103, 103);
+    line-height: initial;
+  }
+  
+  .container-questionnaire{
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .label-checkbox{
+    padding-top: 10px;
+  }
+
+  .wrapper{
+    text-align: right;
+  }
+  .float{
+	position:fixed;
+	width:60px;
+	height:60px;
+	bottom:40px;
+	right:40px;
+	background-color:#0C9;
+	color:#FFF;
+	border-radius:50px;
+	text-align:center;
+	box-shadow: 2px 2px 3px #999;
+}
+
+.my-float{
+	margin-top:22px;
+}
+
+.el-input-number{
+  width: fit-content;
+}

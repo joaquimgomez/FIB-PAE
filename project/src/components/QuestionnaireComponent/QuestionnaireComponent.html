@@ -1,0 +1,79 @@
+<div class="container-questionnaire" v-loading="loading">
+    <el-card style="background-color: #dab8f5;">
+        <el-row :gutter="24">
+            <el-col :xs="24">
+                <h2 class="form_tittle">{{name__questionnaire}}</h2>
+            </el-col>
+        </el-row>
+        <br>
+        <el-row :gutter="24">
+            <el-col :xs="12">
+                <el-button class="photo-button" type="info" plain @click="showCamera()">
+                    <i class="el-icon-camera"></i>
+                    Take a picture
+                </el-button>
+            </el-col>
+        </el-row>
+        <br>
+        <el-form ref="ruleForm" :model="ruleForm" label-width="75px">
+
+            <br>
+            <el-col :xs="24" :sm="22">
+                <span style="margin-left: 75px;color:rgb(105, 103, 103);;">Thank you for taking the time to fill in this questionnaire. Your opinions are really important to us.</span>
+            </el-col>
+            <br>
+
+            <div v-for="(question, index) in questions">
+                <!-- Question -->
+                <el-row>
+                    <el-col :xs="24" :sm="23">
+                        <el-form-item class="" prop="question" style="margin-top:20px;">
+                            <label style="color:rgb(105, 103, 103);font-size: initial;">{{ question.question_label }}</label>
+
+                            <!-- Text answers -->
+                            <div v-if="question.type == 'text'">
+                                <el-input v-model="question.answer" type="textarea" :autosize="{ minRows: 2, maxRows: 6 }"></el-input>
+                            </div>
+
+                            <!-- Checkbox answers -->
+                            <div class="" v-else-if="question.type == 'checkbox' || question.type == 'image'">
+                                <label class="container-radio" v-for="(checkBox, index) in question.checkBoxes" style="color:rgb(105, 103, 103);font-size: initial;">
+                                    <input type="radio" :key="index" v-model="question.checkBox_selected" :name="question.index" :value="checkBox.body">           
+                                    <div v-if="question.type == 'checkbox'">{{ checkBox.body }}</div>
+                                    <span class="checkmark"></span>
+                                    <!-- Image answers -->
+                                    <el-image v-if="question.type == 'image'" style="width: 40px; height: 40px" :src="checkBox.image" :fit="fit"></el-image>
+                                </label>
+                            </div>                                    
+
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </div>                        
+        
+        
+            <el-row :gutter="24">
+                <!-- Save button -->
+                <el-col  style="text-align: right;width: fit-content;">
+                    <el-button type="success" plain size="small" icon="el-icon-check" @click="saveForm()">Save</el-button>
+                </el-col>
+            </el-row>
+
+        </el-form>
+    </el-card>
+
+    <el-dialog :visible.sync="showDialogCamera" width="80%">
+        <span>Take a photo of questionnaire</span>
+        <vue-web-cam
+            ref="webcam"
+            :device-id="deviceId"
+            width="100%"
+            @started="onStarted"
+            @stopped="onStopped"
+            @error="onError"
+            @cameras="onCameras"
+            @camera-change="onCameraChange"
+        />
+        <button type="button" class="btn btn-primary" @click="onCapture">Capture Photo</button>
+    </el-dialog>
+</div>

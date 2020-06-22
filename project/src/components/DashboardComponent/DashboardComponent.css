@@ -1,0 +1,29 @@
+a {
+    color:rgb(95, 93, 93);
+}
+
+.el-card__body{
+    padding:0px;
+    padding-top: 20px;
+}
+
+h6{
+    padding-top: 12px;
+}
+
+button.el-button{
+    box-shadow: 3px 3px 5px rgb(181, 157, 187);
+    width: -webkit-fill-available;
+}
+
+img.image{
+    height: -webkit-fill-available;    
+}
+
+.action-button{
+    background-color: rgb(181, 157, 187);
+    box-shadow:none!important;
+    width: 70%!important;
+    text-align: center!important;
+    padding-left: inherit;
+}

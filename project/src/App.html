@@ -1,0 +1,19 @@
+<div id="app">
+    <nav class="navbar navbar-expand navbar-ligth bg-ligth">
+      <a href="/app" class="navbar-brand">
+        <el-image style="width: 40px; height: 40px" :src="url_logo" fit="fit"></el-image>
+      </a>
+      <div class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a href="/app/newquestionnaire" class="nav-link">New questionnaire</a>
+        </li>
+        <li class="nav-item">
+          <a href="/app/stats" class="nav-link">Statistics</a>
+        </li>
+      </div>
+    </nav>
+
+    <div class="container mt-3">
+      <router-view />
+    </div>
+  </div>
